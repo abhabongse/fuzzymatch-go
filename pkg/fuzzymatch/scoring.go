@@ -4,6 +4,10 @@ score between two given strings. In most cases, you would be interested in the f
 */
 package fuzzymatch
 
+import (
+	"math"
+)
+
 /*
 A definitive function which computes the similarity score between two input strings.
 The returned score value is a floating point between 0 (strings are very distinct)
@@ -18,7 +22,8 @@ func SimilarityScore(fst, snd string) float64 {
 		fstRunes, sndRunes = sndRunes, fstRunes
 	}
 
-	return 0
+	normOptDistScore := normalizedOptimalAlignmentDistance(fstRunes, sndRunes)
+	return normOptDistScore
 }
 
 /*
@@ -31,4 +36,22 @@ func normalizeString(str string) []rune {
 
 	runesData := []rune(str)
 	return runesData
+}
+
+/*
+Compute the "normalized" optimal alignment distance metrics between two given
+slices of rune characters. This "normalization" is conducted to make sure that
+the returned score is between 0 and 1, and is not to be confused with the
+normalization of input strings.
+*/
+func normalizedOptimalAlignmentDistance(fstRunes, sndRunes []rune) float64 {
+	// TODO: replace SimpleAlignmentDistance with the customized distance metric version of the OptimalAlignmentDistance
+	dist := SimpleAlignmentDistance(fstRunes, sndRunes)
+	fstLength := SimpleAlignmentDistance(fstRunes, []rune{})
+	sndLength := SimpleAlignmentDistance(sndRunes, []rune{})
+	score := 1.0 - (dist / math.Max(fstLength, sndLength))
+	if math.IsNaN(score) { // both are empty strings
+		score = 1.0
+	}
+	return score
 }

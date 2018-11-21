@@ -1,6 +1,7 @@
 package fuzzymatch
 
 import (
+	"fmt"
 	"math"
 	"testing"
 )
@@ -15,10 +16,10 @@ func TestSimilarityScore(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"empty & empty", args{"", ""}, 0},
+		{"empty & empty", args{"", ""}, 1},
 		{"empty & something", args{"", "sunday"}, 0},
 		{"something & empty", args{"saturday", ""}, 0},
-		{"days of week", args{"saturday", "sunday"}, 0},
+		{"days of week", args{"saturday", "sunday"}, 0.625},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -27,4 +28,10 @@ func TestSimilarityScore(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleSimilarityScore() {
+	// Find the similarity score between "saturday" and "sunday"
+	score := SimilarityScore("saturday", "sunday")
+	fmt.Println(score)
 }
