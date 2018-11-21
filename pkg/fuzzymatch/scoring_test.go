@@ -1,6 +1,9 @@
 package fuzzymatch
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func TestSimilarityScore(t *testing.T) {
 	type args struct {
@@ -12,14 +15,14 @@ func TestSimilarityScore(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"empty & empty", args{"",""},0},
-		{"empty & something", args{"","sunday"},0},
-		{"something & empty", args{"saturday",""},0},
-		{"days of week", args{"saturday","sunday"},0},
+		{"empty & empty", args{"", ""}, 0},
+		{"empty & something", args{"", "sunday"}, 0},
+		{"something & empty", args{"saturday", ""}, 0},
+		{"days of week", args{"saturday", "sunday"}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SimilarityScore(tt.args.fst, tt.args.snd); got != tt.want {
+			if got := SimilarityScore(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("SimilarityScore() = %v, want %v", got, tt.want)
 			}
 		})
