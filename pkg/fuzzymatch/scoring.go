@@ -23,7 +23,10 @@ func SimilarityScore(fst, snd string) float64 {
 	}
 
 	normOptDistScore := normalizedOptimalAlignmentDistance(fstRunes, sndRunes)
-	return normOptDistScore
+	diceCoefficient := DiceSimilarityCoefficient(fstRunes, sndRunes)
+
+	combinedScore := (normOptDistScore + 2.0 * diceCoefficient) / 3.0
+	return combinedScore
 }
 
 /*
