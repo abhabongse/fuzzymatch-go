@@ -24,9 +24,9 @@ func DiceSimilarityCoefficient(fst, snd []rune) float64 {
 			j++
 		} else if j == sndBigramSeq.Len() {
 			i++
-		} else if Less(&fstBigramSeq, i, &sndBigramSeq, j) {
+		} else if less(&fstBigramSeq, i, &sndBigramSeq, j) {
 			i++
-		} else if Less(&sndBigramSeq, j, &fstBigramSeq, i) {
+		} else if less(&sndBigramSeq, j, &fstBigramSeq, i) {
 			j++
 		} else {
 			i++
@@ -92,14 +92,14 @@ Compare two bigrams at given positions to see which one comes first lexicographi
 Part of the 'Sorter' interface.
 */
 func (bgSeq bigramSequence) Less(i, j int) bool {
-	return Less(&bgSeq, i, &bgSeq, j)
+	return less(&bgSeq, i, &bgSeq, j)
 }
 
 /*
 Compare two bigrams from two sequences (potentially the same sequence) to see which
 one comes first lexicographically.
 */
-func Less(bgSeqA *bigramSequence, indexA int, bgSeqB *bigramSequence, indexB int) bool {
+func less(bgSeqA *bigramSequence, indexA int, bgSeqB *bigramSequence, indexB int) bool {
 	leftRuneA, rightRuneA := bgSeqA.bigram(indexA)
 	leftRuneB, rightRuneB := bgSeqB.bigram(indexB)
 	return leftRuneA < leftRuneB || leftRuneA == leftRuneB && rightRuneA < rightRuneB
