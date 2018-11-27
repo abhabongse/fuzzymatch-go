@@ -6,6 +6,7 @@ package fuzzymatch
 
 import (
 	"math"
+	"strings"
 )
 
 /*
@@ -22,10 +23,10 @@ func SimilarityScore(fst, snd string) float64 {
 		fstRunes, sndRunes = sndRunes, fstRunes
 	}
 
-	normOptDistScore := normalizedOptimalAlignmentDistance(fstRunes, sndRunes)
+	optDistScore := optimalAlignmentDistanceRatio(fstRunes, sndRunes)
 	diceCoefficient := DiceSimilarityCoefficient(fstRunes, sndRunes)
 
-	combinedScore := (normOptDistScore + 2.0 * diceCoefficient) / 3.0
+	combinedScore := (optDistScore + 2.0 * diceCoefficient) / 3.0
 	return combinedScore
 }
 
@@ -35,6 +36,8 @@ Normalize an input string using various methods and return as a slice of runes.
 func normalizeString(str string) []rune {
 	// TODO: introduce multiple string normalization functions
 	str = NormalizeWhiteSpaces(str)
+	str = RemoveAccents(str)
+	str = strings.ToLower(str)
 	// ...
 
 	runesData := []rune(str)
@@ -47,7 +50,7 @@ slices of rune characters. This "normalization" is conducted to make sure that
 the returned score is between 0 and 1, and is not to be confused with the
 normalization of input strings.
 */
-func normalizedOptimalAlignmentDistance(fstRunes, sndRunes []rune) float64 {
+func optimalAlignmentDistanceRatio(fstRunes, sndRunes []rune) float64 {
 	// TODO: replace SimpleAlignmentDistance with the customized distance metric version of the OptimalAlignmentDistance
 	dist := SimpleAlignmentDistance(fstRunes, sndRunes)
 	fstLength := SimpleAlignmentDistance(fstRunes, []rune{})

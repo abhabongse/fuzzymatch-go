@@ -1,6 +1,8 @@
 package fuzzymatch
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNormalizeWhiteSpaces(t *testing.T) {
 	type args struct {
@@ -23,6 +25,30 @@ func TestNormalizeWhiteSpaces(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NormalizeWhiteSpaces(tt.args.str); got != tt.want {
 				t.Errorf("NormalizeWhiteSpaces() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveAccents(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"combined", args{"café könig"}, "cafe konig"},
+		{"decomposed", args{"café könig"}, "cafe konig"},
+		{"special compatibility", args{"n²"}, "n2"},
+		{"latin untouched", args{"normal text"}, "normal text"},
+		{"thai untouched", args{"ที่นู่นนั่นมีเป็นใช้"}, "ที่นู่นนั่นมีเป็นใช้"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveAccents(tt.args.str); got != tt.want {
+				t.Errorf("RemoveAccents() = %v, want %v", got, tt.want)
 			}
 		})
 	}
