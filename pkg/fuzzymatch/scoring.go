@@ -6,6 +6,7 @@ interested in the function SimilarityScore.
 package fuzzymatch
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
 	"math"
 	"strings"
 )
@@ -37,8 +38,8 @@ normalizeString normalizes an input string via various normalization methods.
 */
 func normalizeString(str string) string {
 	// TODO: introduce multiple string normalization functions
-	str = NormalizeWhiteSpaces(str)
-	str = RemoveAccents(str)
+	str = normalization.NormalizeWhiteSpaces(str)
+	str = normalization.RemoveAccents(str)
 	str = strings.ToLower(str)
 	// ...
 

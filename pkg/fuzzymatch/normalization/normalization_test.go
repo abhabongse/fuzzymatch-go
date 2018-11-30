@@ -1,4 +1,4 @@
-package fuzzymatch
+package normalization
 
 import (
 	"testing"
