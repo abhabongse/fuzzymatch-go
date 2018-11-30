@@ -6,6 +6,7 @@ interested in the function SimilarityScore.
 package fuzzymatch
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/bigrams"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
 	"math"
 	"strings"
@@ -27,7 +28,7 @@ func SimilarityScore(fst, snd string) float64 {
 	}
 
 	optDistRatio := optimalAlignmentDistanceRatio(normalizedFst, normalizedSnd)
-	diceCoefficient := DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
+	diceCoefficient := bigrams.DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
 
 	combinedScore := (optDistRatio + 2.0 * diceCoefficient) / 3.0
 	return combinedScore
