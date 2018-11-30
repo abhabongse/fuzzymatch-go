@@ -41,6 +41,7 @@ normalizeString normalizes an input string via various normalization methods.
 func normalizeString(str string) string {
 	// TODO: introduce multiple string normalization functions
 	str = normalization.NormalizeWhiteSpaces(str)
+	str = normalization.RemoveNonPrinting(str)
 	str = normalization.RemoveAccents(str)
 	str = strings.ToLower(str)
 	// ...

@@ -53,3 +53,28 @@ func TestRemoveAccents(t *testing.T) {
 		})
 	}
 }
+
+func TestRemoveNonPrinting(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"empty", args{""}, ""},
+		{"all good", args{"hello how good 123"}, "hello how good 123"},
+		{"non-normal spaces", args{"1\n2\r3"}, "123"},
+		{"control codes", args{"Y\x01M\x02C\x1FA"}, "YMCA"},
+		{"assigned thai", args{"x\xe0\xb8\x81\xe0\xb8\xb2x"}, "xกาx"},
+		{"unassigned thai", args{"x\xe0\xb8\x80\xe0\xb8\xbcx"}, "xx"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveNonPrinting(tt.args.str); got != tt.want {
+				t.Errorf("RemoveNonPrinting() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
