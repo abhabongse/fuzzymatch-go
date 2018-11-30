@@ -1,4 +1,4 @@
-package fuzzymatch
+package editdistance
 
 /*
 UnitDist is a indicator function which returns 1 if two input characters differ and

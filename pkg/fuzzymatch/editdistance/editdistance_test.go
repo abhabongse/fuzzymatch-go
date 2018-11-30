@@ -1,4 +1,4 @@
-package fuzzymatch
+package editdistance
 
 import (
 	"math"

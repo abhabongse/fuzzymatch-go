@@ -7,6 +7,7 @@ package fuzzymatch
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/bigrams"
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
 	"math"
 	"strings"
@@ -56,9 +57,9 @@ used here is not to be confused with the normalization of strings.
 func optimalAlignmentDistanceRatio(fst, snd string) float64 {
 	// TODO: replace SimpleAlignmentDistance with the customized distance
 	//       metric version of the OptimalAlignmentDistance
-	dist := SimpleAlignmentDistance(fst, snd)
-	fstLength := SimpleAlignmentDistance(fst, "")
-	sndLength := SimpleAlignmentDistance("", snd)
+	dist := editdistance.SimpleAlignmentDistance(fst, snd)
+	fstLength := editdistance.SimpleAlignmentDistance(fst, "")
+	sndLength := editdistance.SimpleAlignmentDistance("", snd)
 	score := 1.0 - (dist / math.Max(fstLength, sndLength))
 	if math.IsNaN(score) { // both are empty strings
 		score = 1.0
