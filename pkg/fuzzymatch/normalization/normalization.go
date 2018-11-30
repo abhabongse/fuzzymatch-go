@@ -23,7 +23,7 @@ func NormalizeWhiteSpaces(str string) string {
 /*
 RemoveAccents tries to remove as many combining diacritical marks from the input string
 as possible. It handles various combinations of the same Unicode characters whenever
-possible (such as 'ö' as a single codepoint vs. 'o' + '̈' = 'ö' which has 2 codepoints).
+possible (such as 'ö' as a single codepoint vs. 'o' + '¨' = 'ö' which has 2 codepoints).
 */
 func RemoveAccents(str string) string {
 	isNonSpacingMark := runes.Remove(runes.In(AllCombiningDiacriticalMarks))
