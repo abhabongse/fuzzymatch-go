@@ -32,7 +32,7 @@ func SimilarityScore(fst, snd string) float64 {
 	diceCoefficient := bigrams.DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
-	return combinedScore
+	return clipNumber(combinedScore, 0.0, 1.0)
 }
 
 /*
@@ -65,4 +65,20 @@ func optimalAlignmentDistanceRatio(fst, snd string) float64 {
 		score = 1.0
 	}
 	return score
+}
+
+/*
+clipNumber readjust the provided values in between the given range as defined
+by upper and lower. If the given value is smaller than lower, lower is returned;
+if the given value is larger than upper, upper is returned; otherwise, the value
+itself is returned.
+*/
+func clipNumber(value, lower, upper float64) float64 {
+	if value > upper {
+		return upper
+	}
+	if value < lower {
+		return lower
+	}
+	return value
 }
