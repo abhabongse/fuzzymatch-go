@@ -7,13 +7,13 @@ SimpleAlignmentDistance is a simplified version of the OptimalAlignmentDistance 
 It assumes that all edit operations (insertions, deletions, substitutions, and adjacent
 character transpositions) will incur unit penalties.
 */
-func SimpleAlignmentDistance(fst, snd []rune) float64 {
+func SimpleAlignmentDistance(fst, snd string) float64 {
 	return OptimalAlignmentDistance(fst, snd, UnitDist, UnitDist)
 }
 
 /*
 OptimalAlignmentDistance computes the "optimal alignment distance" between two given
-string (both of which are provided as a slice of rune characters).
+string, viewed as a sequence of rune characters.
 
 An optimal alignment distance is a restriction over the Damerau–Levenshtein distance,
 which in turn is a generalization of the original Levenshtein distance.
@@ -79,10 +79,14 @@ of two input strings, respectively. Additionally, the memory usage for this func
 is within the order of O(|snd|).
 */
 func OptimalAlignmentDistance(
-	fst, snd []rune,
+	fst, snd string,
 	substitutionDistFunc func(rune, rune) float64,
 	transpositionDistFunc func(rune, rune) float64,
 ) float64 {
+	// Convert string into slice of runes
+	fstRunes := []rune(fst)
+	sndRunes := []rune(snd)
+
 	// Set up the dynamic programming table maintaining only the last 3 rows
 	// of the computation. Each rune with zero-index i of the first string
 	// corresponds to the row i+1 of the dynamic programming table, whereas
@@ -90,15 +94,15 @@ func OptimalAlignmentDistance(
 	// column j+1 of the table. Note that row 0 and column 0 is reserved for
 	// empty prefix initializations.
 	table := [3][]float64{
-		make([]float64, len(snd)+1),
-		make([]float64, len(snd)+1),
-		make([]float64, len(snd)+1),
+		make([]float64, len(sndRunes)+1),
+		make([]float64, len(sndRunes)+1),
+		make([]float64, len(sndRunes)+1),
 	}
 
 	// Initialize row 0 of the dynamic programming table by repeatedly
 	// inserting runes in order.
 	table[0][0] = 0
-	for zj, d := range snd {
+	for zj, d := range sndRunes {
 		// For definitions of d, zj, pj, j, see the next part of the code
 		_, pj, j := resolveColIndex(zj)
 		table[0][j] = table[0][pj] + substitutionDistFunc(0, d)
@@ -106,7 +110,7 @@ func OptimalAlignmentDistance(
 
 	// Fill in the dynamic programming table row-by-row
 	var pc rune = 0 // rune from the previous row, initialized empty
-	for zi, c := range fst {
+	for zi, c := range fstRunes {
 		ppi, pi, i := resolveRowIndex(zi)
 		// c = each rune in the first string
 		// zi = zero-indexing over the original first string space
@@ -116,7 +120,7 @@ func OptimalAlignmentDistance(
 		table[i][0] = table[pi][0] + substitutionDistFunc(c, 0)
 
 		var pd rune = 0 // rune from the previous column, initialized empty
-		for zj, d := range snd {
+		for zj, d := range sndRunes {
 			ppj, pj, j := resolveColIndex(zj)
 			// d = each rune in the second string
 			// zj = zero-indexing over the original second string space
@@ -145,8 +149,8 @@ func OptimalAlignmentDistance(
 		pc = c
 	}
 	// Extract the actual distance score
-	_, _, i := resolveRowIndex(len(fst) - 1)
-	_, _, j := resolveColIndex(len(snd) - 1)
+	_, _, i := resolveRowIndex(len(fstRunes) - 1)
+	_, _, j := resolveColIndex(len(sndRunes) - 1)
 	return table[i][j]
 }
 

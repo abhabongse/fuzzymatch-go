@@ -22,7 +22,7 @@ func TestDiceSimilarityCoefficient(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DiceSimilarityCoefficient([]rune(tt.args.fst), []rune(tt.args.snd)); math.Abs(got-tt.want) > 1e-6 {
+			if got := DiceSimilarityCoefficient(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("DiceSimilarityCoefficient() = %v, want %v", got, tt.want)
 			}
 		})

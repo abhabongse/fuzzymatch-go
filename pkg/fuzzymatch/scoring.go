@@ -1,6 +1,7 @@
 /*
-Package fuzzymatch implements an approximate string matching algorithm to determine the similarity
-score between two given strings. In most cases, you would be interested in the function SimilarityScore.
+Package fuzzymatch implements an approximate string matching algorithm to determine
+the similarity score between two given strings. In most cases, you would be
+interested in the function SimilarityScore.
 */
 package fuzzymatch
 
@@ -10,51 +11,52 @@ import (
 )
 
 /*
-A definitive function which computes the similarity score between two input strings.
-The returned score value is a floating point between 0 (strings are very distinct)
-and 1 (strings are identical).
+SimilarityScore is the definitive function which computes the similarity score
+between two input strings. The returned score value is a floating point between
+0 (meaning two strings are very distinct) and 1 (meaning two strings are identical
+when normalized).
 */
 func SimilarityScore(fst, snd string) float64 {
-	fstRunes := normalizeString(fst)
-	sndRunes := normalizeString(snd)
+	normalizedFst := normalizeString(fst)
+	normalizedSnd := normalizeString(snd)
 
 	// Breaking ties to save memory in the long run
-	if len(fstRunes) < len(sndRunes) {
-		fstRunes, sndRunes = sndRunes, fstRunes
+	if len(normalizedFst) < len(normalizedSnd) {
+		normalizedFst, normalizedSnd = normalizedSnd, normalizedFst
 	}
 
-	optDistScore := optimalAlignmentDistanceRatio(fstRunes, sndRunes)
-	diceCoefficient := DiceSimilarityCoefficient(fstRunes, sndRunes)
+	optDistRatio := optimalAlignmentDistanceRatio(normalizedFst, normalizedSnd)
+	diceCoefficient := DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
 
-	combinedScore := (optDistScore + 2.0 * diceCoefficient) / 3.0
+	combinedScore := (optDistRatio + 2.0 * diceCoefficient) / 3.0
 	return combinedScore
 }
 
 /*
-Normalize an input string using various methods and return as a slice of runes.
+normalizeString normalizes an input string via various normalization methods.
 */
-func normalizeString(str string) []rune {
+func normalizeString(str string) string {
 	// TODO: introduce multiple string normalization functions
 	str = NormalizeWhiteSpaces(str)
 	str = RemoveAccents(str)
 	str = strings.ToLower(str)
 	// ...
 
-	runesData := []rune(str)
-	return runesData
+	return str
 }
 
 /*
-Compute the "normalized" optimal alignment distance metrics between two given
-slices of rune characters. This "normalization" is conducted to make sure that
-the returned score is between 0 and 1, and is not to be confused with the
-normalization of input strings.
+optimalAlignmentDistanceRatio computes the unit-normalized optimal alignment
+distance metrics between two input strings. This unit-normalization is conducted
+to make sure that the returned score is between 0 and 1. The term "normalization"
+used here is not to be confused with the normalization of strings.
 */
-func optimalAlignmentDistanceRatio(fstRunes, sndRunes []rune) float64 {
-	// TODO: replace SimpleAlignmentDistance with the customized distance metric version of the OptimalAlignmentDistance
-	dist := SimpleAlignmentDistance(fstRunes, sndRunes)
-	fstLength := SimpleAlignmentDistance(fstRunes, []rune{})
-	sndLength := SimpleAlignmentDistance(sndRunes, []rune{})
+func optimalAlignmentDistanceRatio(fst, snd string) float64 {
+	// TODO: replace SimpleAlignmentDistance with the customized distance
+	//       metric version of the OptimalAlignmentDistance
+	dist := SimpleAlignmentDistance(fst, snd)
+	fstLength := SimpleAlignmentDistance(fst, "")
+	sndLength := SimpleAlignmentDistance("", snd)
 	score := 1.0 - (dist / math.Max(fstLength, sndLength))
 	if math.IsNaN(score) { // both are empty strings
 		score = 1.0

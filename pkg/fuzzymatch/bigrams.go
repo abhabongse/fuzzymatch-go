@@ -14,9 +14,11 @@ where
     - n_snd = the number of bigrams in the second string
     - n_itx = the number of bigrams in the intersection of both bags
 */
-func DiceSimilarityCoefficient(fst, snd []rune) float64 {
-	fstBigramSeq := newSortedBigramSequence(fst)
-	sndBigramSeq := newSortedBigramSequence(snd)
+func DiceSimilarityCoefficient(fst, snd string) float64 {
+	fstRunes := []rune(fst)
+	sndRunes := []rune(snd)
+	fstBigramSeq := newSortedBigramSequence(fstRunes)
+	sndBigramSeq := newSortedBigramSequence(sndRunes)
 
 	numIntersections := 0
 	for i, j := 0, 0; i < fstBigramSeq.Len() || j < sndBigramSeq.Len(); {

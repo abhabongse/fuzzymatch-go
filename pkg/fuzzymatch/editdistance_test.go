@@ -22,7 +22,7 @@ func TestSimpleAlignmentDistance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SimpleAlignmentDistance([]rune(tt.args.fst), []rune(tt.args.snd)); math.Abs(got-tt.want) > 1e-6 {
+			if got := SimpleAlignmentDistance(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("SimpleAlignmentDistance() = %v, want %v", got, tt.want)
 			}
 		})
