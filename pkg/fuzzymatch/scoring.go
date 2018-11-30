@@ -30,7 +30,7 @@ func SimilarityScore(fst, snd string) float64 {
 	optDistRatio := optimalAlignmentDistanceRatio(normalizedFst, normalizedSnd)
 	diceCoefficient := bigrams.DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
 
-	combinedScore := (optDistRatio + 2.0 * diceCoefficient) / 3.0
+	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
 	return combinedScore
 }
 

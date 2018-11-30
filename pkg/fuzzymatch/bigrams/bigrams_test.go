@@ -15,10 +15,10 @@ func TestDiceSimilarityCoefficient(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"empty", args{"", ""},1},
-		{"partially empty", args{"", "hi"},0},
-		{"weekends", args{"saturday", "sunday"},0.5},
-		{"circular", args{"abaca", "acaba"},1},
+		{"empty", args{"", ""}, 1},
+		{"partially empty", args{"", "hi"}, 0},
+		{"weekends", args{"saturday", "sunday"}, 0.5},
+		{"circular", args{"abaca", "acaba"}, 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
