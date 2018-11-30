@@ -33,12 +33,12 @@ into the other. Those edit operations is limited to (1) an insertion of a charac
 character.
 
 The penalty for these edit operations is described by the input argument called the
-substitutionDistFunc function; this function has to be a symmetric function that takes
+substDistFunc function; this function has to be a symmetric function that takes
 in two rune characters and outputs their substitution penalty score between 0 and 1.
 If two identical runes are presented, the output penalty has to be 0. As a special case,
-if one of the input argument is rune 0, then substitutionDistFunc should return the
+if one of the input argument is rune 0, then substDistFunc should return the
 insertion or the deletion penalty of the other rune character. For an example of what to
-expect from the substitutionDistFunc, see the distance metric function UnitDist.
+expect from the substDistFunc, see the distance metric function UnitDist.
 
 For example, under the UnitDist character substitution metric, the Levenshtein distance
 between "Hello" and "Hola" is 3, whereas the Levenshtein distance between "Hi" and ""
@@ -51,10 +51,10 @@ The Damerau–Levenshtein distance was improved upon the original Levenshtein di
 by allowing another kind of edit operation: a transposition of two adjacent characters.
 
 The penalty for this particular edit operations is governed by another input argument
-called the transpositionDistFunc function. This function also has to be a symmetric
+called the transDistFunc function. This function also has to be a symmetric
 function that takes in two rune characters and outputs their transposition penalty
 score between 0 and 2. Note that if two runes, x and y, satisfy the equation
-    transpositionDistFunc(x, y) >= 2 * substitutionDistFunc(x, y)
+    transDistFunc(x, y) >= 2 * substDistFunc(x, y)
 then transpositions are effectively disallowed for these two particular rune
 characters, x and y, since it would be cheaper to perform two substitutions instead.
 
@@ -83,11 +83,7 @@ programming algorithm that takes O(|fst| * |snd|) where |fst| and |snd| are the 
 of two input strings, respectively. Additionally, the memory usage for this function
 is within the order of O(|snd|).
 */
-func OptimalAlignmentDistance(
-	fst, snd string,
-	substitutionDistFunc func(rune, rune) float64,
-	transpositionDistFunc func(rune, rune) float64,
-) float64 {
+func OptimalAlignmentDistance(fst, snd string, substDistFunc SubstDistMetric, transDistFunc TransDistMetric) float64 {
 	// Convert string into slice of runes
 	fstRunes := []rune(fst)
 	sndRunes := []rune(snd)
@@ -110,7 +106,7 @@ func OptimalAlignmentDistance(
 	for zj, d := range sndRunes {
 		// For definitions of d, zj, pj, j, see the next part of the code
 		_, pj, j := resolveColIndex(zj)
-		table[0][j] = table[0][pj] + substitutionDistFunc(0, d)
+		table[0][j] = table[0][pj] + substDistFunc(0, d)
 	}
 
 	// Fill in the dynamic programming table row-by-row
@@ -122,7 +118,7 @@ func OptimalAlignmentDistance(
 		// ppi, pi, i = the before previous, the previous, and the current
 		//     row index in the dynamic programming table space
 
-		table[i][0] = table[pi][0] + substitutionDistFunc(c, 0)
+		table[i][0] = table[pi][0] + substDistFunc(c, 0)
 
 		var pd rune = 0 // rune from the previous column, initialized empty
 		for zj, d := range sndRunes {
@@ -135,10 +131,10 @@ func OptimalAlignmentDistance(
 			// Compute the minimum score for the rune insertions, deletions,
 			// and substitutions only.
 			table[i][j] = math.Min(
-				table[pi][pj]+substitutionDistFunc(c, d),
+				table[pi][pj]+substDistFunc(c, d),
 				math.Min(
-					table[pi][j]+substitutionDistFunc(c, 0),
-					table[i][pj]+substitutionDistFunc(0, d),
+					table[pi][j]+substDistFunc(c, 0),
+					table[i][pj]+substDistFunc(0, d),
 				),
 			)
 			// Now consider the transposition penalty if the last two runes
@@ -146,7 +142,7 @@ func OptimalAlignmentDistance(
 			if pc == d && pd == c {
 				table[i][j] = math.Min(
 					table[i][j],
-					table[ppi][ppj]+transpositionDistFunc(c, d),
+					table[ppi][ppj]+transDistFunc(c, d),
 				)
 			}
 			pd = d
