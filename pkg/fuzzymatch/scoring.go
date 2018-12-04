@@ -59,6 +59,9 @@ func normalizeString(str string) string {
 	)
 	str = normalization.ApplyTransformer(unicodeTransformer, str)
 
+	// Special rule: combine characters for sara-ae and sara-am
+	str = normalization.NormalizeThaiGrams(str)
+
 	// TODO: introduce multiple string normalization functions
 
 	return str

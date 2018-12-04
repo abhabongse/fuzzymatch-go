@@ -20,6 +20,7 @@ func TestSimilarityScore(t *testing.T) {
 		{"empty & something", args{"", "sunday"}, 0},
 		{"something & empty", args{"saturday", ""}, 0},
 		{"days of week", args{"saturday", "sunday"}, 13.0 / 24.0},
+		{"identical after norm", args{"\nการแข่งขัน schön", "การเเข่ง\x01ขัน schon"}, 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

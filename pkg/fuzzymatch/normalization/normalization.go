@@ -18,6 +18,16 @@ func ReSpace(str string) string {
 }
 
 /*
+NormalizeThaiGrams recombines two kinds of bigrams into single characters:
+(1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
+*/
+func NormalizeThaiGrams(str string) string {
+	str = strings.Replace(str, "ํา", "ำ", -1)
+	str = strings.Replace(str, "เเ", "แ", -1)
+	return str
+}
+
+/*
 StripNonPrint removes all occurrences of non-printing and non-spacing rune characters
 from a string.
 */

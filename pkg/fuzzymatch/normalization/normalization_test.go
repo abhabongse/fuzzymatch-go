@@ -30,6 +30,30 @@ func TestReSpace(t *testing.T) {
 	}
 }
 
+func TestNormalizeThaiGrams(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"empty",args{""}, ""},
+		{"normal thai",args{"สำแดงแรงดี"}, "สำแดงแรงดี"},
+		{"double sara-e",args{"สำเเดงแรงดี"}, "สำแดงแรงดี"},
+		{"attach sara-am",args{"สําแดงแรงดี"}, "สำแดงแรงดี"},
+		{"both kinds",args{"สําแดงเเรงดี"}, "สำแดงแรงดี"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NormalizeThaiGrams(tt.args.str); got != tt.want {
+				t.Errorf("NormalizeThaiGrams() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestStripNonPrint(t *testing.T) {
 	type args struct {
 		str string
