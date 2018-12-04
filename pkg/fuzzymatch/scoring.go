@@ -9,6 +9,7 @@ import (
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/bigrams"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
+	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"math"
 )
@@ -43,6 +44,7 @@ func normalizeString(str string) string {
 	// Sanitize input string by removing non-printing rune characters and
 	// replace all kinds of white-spaces with just normal spaces
 	sanitizeTransformer := transform.Chain(
+		runes.ReplaceIllFormed(),
 		normalization.StripNonPrintTransformer,
 		normalization.ToNormalSpaceTransformer,
 	)
