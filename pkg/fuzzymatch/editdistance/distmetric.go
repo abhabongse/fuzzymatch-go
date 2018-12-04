@@ -1,29 +1,37 @@
 package editdistance
 
 /*
-SubstDistMetric is a type representing the distance score (penalty) function for
-edit operations, particularly substitutions as well as insertions and deletions.
-The function takes in two runes as input arguments and returns the penalty value
-between 0 (meaning that two runes are identical) and 1 (meaning that two runes
-are totally distinct).
-*/
-type SubstDistMetric = func(rune, rune) float64
+RuneDistanceMetric is an umbrella type representing a symmetric function which
+computes a distance score (penalty) between a given pair of runes. There are two
+different kinds of distance metrics: substitution penalty and transposition penalty.
 
-/*
-TransDistMetric is a type representing the distance score (penalty) function for
-edit operations, particularly transpositions of adjacent characters. The function
+
+Substitution penalty
+
+Substitution penalty refers to the cost of character substitutions (which includes
+insertions and deletions as special cases). Specifically, a function of this kind
 takes in two runes as input arguments and returns the penalty value between 0
-(meaning that two runes are highly likely to be transposed) and 1 (meaning that
-two runes are hardly ever transposed).
+(meaning that two runes are identical) and 1 (meaning that two runes are totally
+distinct). The insertion and deletion penalties are represented by assigning byte 0
+as one of the input argument to the function.
+
+
+Transposition penalty
+
+Transposition penalty refers to the cost of adjacent character transpositions.
+Specifically, a function of this kind takes in two runes as input argument and
+returns the penalty value between 0 (meaning that both runes are interchangeable)
+and 2 (meaning that two runes are hardly mistaken with each other).
 */
-type TransDistMetric = func(rune, rune) float64
+type RuneDistanceMetric = func(rune, rune) float64
 
 /*
-UnitDist is a indicator function which returns 1 if two input characters differ and
-returns 0 otherwise. To represent the distance score (or the penalty) for insertion
-and deletion operations, we use the rune character 0 to represent the absence of a
-character input. This function is guaranteed to be symmetric (i.e. the order of
-arguments do not matter).
+UnitDist is an indicator function which returns 1 if two input characters differ
+and returns 0 otherwise. This function can be used for both the substitution and the
+transposition penalties.
+
+UnitDist is a symmetric function, meaning that the order of the input arguments do
+not matter.
 
 For example, UnitDist('a', 'b') is the penalty for substituting character 'a' with
 another character 'b' (which is 1 in this case) whereas UnitDist('c', 0) is the

@@ -83,7 +83,10 @@ programming algorithm that takes O(|fst| * |snd|) where |fst| and |snd| are the 
 of two input strings, respectively. Additionally, the memory usage for this function
 is within the order of O(|snd|).
 */
-func OptimalAlignmentDistance(fst, snd string, substDistFunc SubstDistMetric, transDistFunc TransDistMetric) float64 {
+func OptimalAlignmentDistance(
+	fst, snd string,
+	substDistFunc, transDistFunc RuneDistanceMetric,
+) float64 {
 	// Convert string into slice of runes
 	fstRunes := []rune(fst)
 	sndRunes := []rune(snd)
