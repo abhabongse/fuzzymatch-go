@@ -5,44 +5,56 @@ be used to pre-process input strings.
 package normalization
 
 import (
-	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
 	"strings"
-	"unicode"
 )
 
 /*
-NormalizeWhiteSpaces removes leading and trailing white-spaces, then it reduces all
-inter-word white-spaces into a single normal space.
+ReSpace removes leading and trailing white-spaces, then it reduces all inter-word
+white-spaces into a single normal space.
 */
-func NormalizeWhiteSpaces(str string) string {
+func ReSpace(str string) string {
 	return strings.Join(strings.Fields(str), " ")
 }
 
 /*
-RemoveAccents tries to remove as many combining diacritical marks from the input string
-as possible. It handles various combinations of the same Unicode characters whenever
-possible (such as 'ö' as a single codepoint vs. 'o' + '¨' = 'ö' which has 2 codepoints).
+StripNonPrint removes all occurrences of non-printing and non-spacing rune characters
+from a string.
 */
-func RemoveAccents(str string) string {
-	isNonSpacingMark := runes.Remove(runes.In(AllCombiningDiacriticalMarks))
-	transformer := transform.Chain(norm.NFKD, isNonSpacingMark, norm.NFKC)
-
-	result, _, err := transform.String(transformer, str)
-	if err == nil {
-		return result
-	}
-	return str
+func StripNonPrint(str string) string {
+	return ApplyTransformer(StripNonPrintTransformer, str)
 }
 
 /*
-RemoveNonPrinting will remove all non-printing characters as well as all white-space
-characters that are not normal spaces (U+0020).
+ToNormalSpace replaces all white space rune characters into a normal space.
 */
-func RemoveNonPrinting(str string) string {
-	isNonPrinting := runes.Remove(runes.Predicate(func(r rune) bool { return !unicode.IsPrint(r)}))
-	result, _, err := transform.String(isNonPrinting, str)
+func ToNormalSpace(str string) string {
+	return ApplyTransformer(ToNormalSpaceTransformer, str)
+}
+
+/*
+RemoveAccents tries to remove as many combining diacritical marks from the input
+string as possible.
+*/
+func RemoveAccents(str string) string {
+	return ApplyTransformer(RemoveAccentsTransformer, str)
+}
+
+/*
+_ToLower transforms all unicode characters into its lowercase forms as defined
+by Unicode property. Avoid this function and use string.Lower instead; this function
+exists solely for testing of Unicode transformers.
+*/
+func _ToLower(str string) string {
+	return ApplyTransformer(ToLowerTransformer, str)
+}
+
+/*
+ApplyTransformer is a helper function which applies the unicode transformer to
+an input string; whenever errors occur, the original input string will be returned.
+*/
+func ApplyTransformer(t transform.Transformer, str string) string {
+	result, _, err := transform.String(t, str)
 	if err == nil {
 		return result
 	}

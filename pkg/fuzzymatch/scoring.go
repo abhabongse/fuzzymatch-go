@@ -9,8 +9,8 @@ import (
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/bigrams"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
+	"golang.org/x/text/transform"
 	"math"
-	"strings"
 )
 
 /*
@@ -39,12 +39,27 @@ func SimilarityScore(fst, snd string) float64 {
 normalizeString normalizes an input string via various normalization methods.
 */
 func normalizeString(str string) string {
+
+	// Sanitize input string by removing non-printing rune characters and
+	// replace all kinds of white-spaces with just normal spaces
+	sanitizeTransformer := transform.Chain(
+		normalization.StripNonPrintTransformer,
+		normalization.ToNormalSpaceTransformer,
+	)
+	str = normalization.ApplyTransformer(sanitizeTransformer, str)
+
+	// Re-spacing the entire string by stripping out leading+trailing spaces,
+	// and then transforming multiple consecutive spaces with a single space
+	str = normalization.ReSpace(str)
+
+	// Perform more sophisticated Unicode normalization on strings
+	unicodeTransformer := transform.Chain(
+		normalization.RemoveAccentsTransformer,
+		normalization.ToLowerTransformer,
+	)
+	str = normalization.ApplyTransformer(unicodeTransformer, str)
+
 	// TODO: introduce multiple string normalization functions
-	str = normalization.NormalizeWhiteSpaces(str)
-	str = normalization.RemoveNonPrinting(str)
-	str = normalization.RemoveAccents(str)
-	str = strings.ToLower(str)
-	// ...
 
 	return str
 }
