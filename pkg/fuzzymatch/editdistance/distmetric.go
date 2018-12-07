@@ -44,3 +44,21 @@ func UnitDist(c, d rune) float64 {
 		return 1
 	}
 }
+
+/*
+ErrorTolerantSubstDist is a function returning substitution penalties with values
+between 0 and 1. If erroneous substitutions between rune characters c and d are
+more likely, then the penalty will be smaller.
+*/
+func ErrorTolerantSubstDist(c, d rune) float64 {
+	return UnitDist(c, d)
+}
+
+/*
+ErrorTolerantSubstDist is a function returning transposition penalties with values
+between 0 and 2. If erroneous transpositions between rune characters c and d are
+more likely, then the penalty will be smaller.
+*/
+func ErrorTolerantTransDist(c, d rune) float64 {
+	return UnitDist(c, d)
+}
