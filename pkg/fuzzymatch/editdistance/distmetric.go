@@ -75,18 +75,19 @@ func FuzzySubstErrorDist(c, d rune) float64 {
 substErrorTable maps a pair of rune characters to their substitution errors.
 */
 var substErrorTable = map[RunePair]float64{
-	// The following 5 rules given leniency to users who miss some ascending characters.
-	RunePair{runedata.ThaiCharacterMaiEk, 0}:       0.6,
-	RunePair{runedata.ThaiCharacterMaiTho, 0}:      0.6,
-	RunePair{runedata.ThaiCharacterMaiTri, 0}:      0.6,
-	RunePair{runedata.ThaiCharacterMaiChattawa, 0}: 0.6,
-	RunePair{runedata.ThaiCharacterThanthakhat, 0}: 0.6,
 
 	// The following 3 rules describes pairs of characters Thai people use interchangeably
 	RunePair{runedata.ThaiCharacterDoChada, runedata.ThaiCharacterToPatak}:              0.9,
 	RunePair{runedata.ThaiCharacterSoSala, runedata.ThaiCharacterSoRusi}:                0.9,
 	RunePair{runedata.ThaiCharacterSoSala, runedata.ThaiCharacterSoSua}:                 0.9,
 	RunePair{runedata.ThaiCharacterSaraAiMaimalai, runedata.ThaiCharacterSaraAiMaimuan}: 0.8,
+
+	// The following 5 rules given leniency to users who miss some ascending characters.
+	RunePair{runedata.ThaiCharacterMaiEk, 0}:       0.6,
+	RunePair{runedata.ThaiCharacterMaiTho, 0}:      0.6,
+	RunePair{runedata.ThaiCharacterMaiTri, 0}:      0.6,
+	RunePair{runedata.ThaiCharacterMaiChattawa, 0}: 0.6,
+	RunePair{runedata.ThaiCharacterThanthakhat, 0}: 0.6,
 
 	// The following 3 rules are common tonal confusions even among Thai people
 	RunePair{runedata.ThaiCharacterMaiEk, runedata.ThaiCharacterMaiTho}:     0.6,
