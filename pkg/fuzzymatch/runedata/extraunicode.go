@@ -1,4 +1,4 @@
-package normalization
+package runedata
 
 import (
 	"golang.org/x/text/unicode/rangetable"

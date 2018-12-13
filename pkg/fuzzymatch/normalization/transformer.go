@@ -1,6 +1,7 @@
 package normalization
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/runedata"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
@@ -11,7 +12,7 @@ import (
 StripNonPrintingTransform is a Unicode stream transformer object which removes
 all occurrences of non-printing and non-spacing rune characters from a string.
 */
-var StripNonPrintTransformer = runes.Remove(runes.NotIn(PrintsAndWhiteSpaces))
+var StripNonPrintTransformer = runes.Remove(runes.NotIn(runedata.PrintsAndWhiteSpaces))
 
 /*
 ToNormalSpaceTransformer is a Unicode stream transformer object which replaces
@@ -34,7 +35,7 @@ then re-combined to get final output.
 */
 var RemoveAccentsTransformer = transform.Chain(
 	norm.NFKD,
-	runes.Remove(runes.In(AllCombiningDiacriticalMarks)),
+	runes.Remove(runes.In(runedata.AllCombiningDiacriticalMarks)),
 	norm.NFKC,
 )
 
