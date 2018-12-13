@@ -1,5 +1,14 @@
 package editdistance
 
+import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/runedata"
+)
+
+/*
+RunePair is a struct type for a pair of runes.
+*/
+type RunePair = struct{ c, d rune }
+
 /*
 RuneDistanceMetric is an umbrella type representing a symmetric function which
 computes a distance score (penalty) between a given pair of runes. There are two
@@ -40,25 +49,76 @@ penalty for an insertion or a deletion of character 'c'.
 func UnitDist(c, d rune) float64 {
 	if c == d {
 		return 0
-	} else {
-		return 1
 	}
+	return 1
 }
 
 /*
-ErrorTolerantSubstDist is a function returning substitution penalties with values
-between 0 and 1. If erroneous substitutions between rune characters c and d are
-more likely, then the penalty will be smaller.
+FuzzySubstErrorDist is a function returning substitution penalties with values
+between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
+between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func ErrorTolerantSubstDist(c, d rune) float64 {
-	return UnitDist(c, d)
+func FuzzySubstErrorDist(c, d rune) float64 {
+	if c == d {
+		return 0 // Exact match
+	}
+	if value, ok := substErrorTable[RunePair{c, d}]; ok {
+		return value
+	}
+	if value, ok := substErrorTable[RunePair{d, c}]; ok {
+		return value
+	}
+	return 1 // Full substitution penalty
 }
 
 /*
-ErrorTolerantSubstDist is a function returning transposition penalties with values
-between 0 and 2. If erroneous transpositions between rune characters c and d are
-more likely, then the penalty will be smaller.
+substErrorTable maps a pair of rune characters to their substitution errors.
 */
-func ErrorTolerantTransDist(c, d rune) float64 {
-	return UnitDist(c, d)
+var substErrorTable = map[RunePair]float64{
+	// The following 5 rules given leniency to users who miss some ascending characters.
+	RunePair{runedata.ThaiCharacterMaiEk, 0}:       0.6,
+	RunePair{runedata.ThaiCharacterMaiTho, 0}:      0.6,
+	RunePair{runedata.ThaiCharacterMaiTri, 0}:      0.6,
+	RunePair{runedata.ThaiCharacterMaiChattawa, 0}: 0.6,
+	RunePair{runedata.ThaiCharacterThanthakhat, 0}: 0.6,
+
+	// The following 3 rules describes pairs of characters Thai people use interchangeably
+	RunePair{runedata.ThaiCharacterDoChada, runedata.ThaiCharacterToPatak}:              0.9,
+	RunePair{runedata.ThaiCharacterSoSala, runedata.ThaiCharacterSoRusi}:                0.9,
+	RunePair{runedata.ThaiCharacterSoSala, runedata.ThaiCharacterSoSua}:                 0.9,
+	RunePair{runedata.ThaiCharacterSaraAiMaimalai, runedata.ThaiCharacterSaraAiMaimuan}: 0.8,
+
+	// The following 3 rules are common tonal confusions even among Thai people
+	RunePair{runedata.ThaiCharacterMaiEk, runedata.ThaiCharacterMaiTho}:     0.6,
+	RunePair{runedata.ThaiCharacterMaiTho, runedata.ThaiCharacterMaiTri}:    0.6,
+	RunePair{runedata.ThaiCharacterMaiTri, runedata.ThaiCharacterMaitaikhu}: 0.6,
+}
+
+/*
+FuzzyTransErrorDist is a function returning transposition penalties with values
+between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
+between rune characters c and d are more likely, then the penalty will be smaller.
+*/
+func FuzzyTransErrorDist(c, d rune) float64 {
+	if c == d {
+		return 0 // Exact match
+	}
+	if value, ok := transErrorTable[RunePair{c, d}]; ok {
+		return value
+	}
+	if value, ok := transErrorTable[RunePair{d, c}]; ok {
+		return value
+	}
+	return 1 // Full transposition penalty
+}
+
+/*
+transErrorTable maps a pair of rune characters to their transposition error penalties.
+*/
+var transErrorTable = map[RunePair]float64{
+	// The following 4 rules are transpositions between SaraAm and tonal marks
+	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiEk}:       0.3,
+	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiTho}:      0.3,
+	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiTri}:      0.3,
+	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiChattawa}: 0.3,
 }

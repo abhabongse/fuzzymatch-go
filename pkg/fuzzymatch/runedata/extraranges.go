@@ -1,3 +1,8 @@
+/*
+Source file 'extraranges.go' contains additional definitions of ranges of
+Unicode characters. Characters within the same range share some particular
+properties or traits.
+*/
 package runedata
 
 import (

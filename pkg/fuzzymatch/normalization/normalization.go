@@ -5,6 +5,7 @@ be used to pre-process input strings.
 package normalization
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/runedata"
 	"golang.org/x/text/transform"
 	"strings"
 )
@@ -22,8 +23,16 @@ NormalizeThaiGrams recombines two kinds of bigrams into single characters:
 (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
 */
 func NormalizeThaiGrams(str string) string {
-	str = strings.Replace(str, "ํา", "ำ", -1)
-	str = strings.Replace(str, "เเ", "แ", -1)
+	// TODO: implement this function in terms of a string transformer
+
+	preSaraAm := string([]rune{runedata.ThaiCharacterNikhahit, runedata.ThaiCharacterSaraAa})
+	postSaraAm := string([]rune{runedata.ThaiCharacterSaraAm})
+	str = strings.Replace(str, preSaraAm, postSaraAm, -1)
+
+	preSaraAe := string([]rune{runedata.ThaiCharacterSaraE, runedata.ThaiCharacterSaraE})
+	postSaraAe := string([]rune{runedata.ThaiCharacterSaraAe})
+	str = strings.Replace(str, preSaraAe, postSaraAe, -1)
+
 	return str
 }
 
