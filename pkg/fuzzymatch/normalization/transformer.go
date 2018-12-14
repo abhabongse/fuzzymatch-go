@@ -9,6 +9,21 @@ import (
 )
 
 /*
+ApplyTransformers applies each string transformer in the given sequence of
+transformers to the given input string. If any transformer produces an error,
+it will be silently ignored and intermediate string will not be affected.
+*/
+func ApplyTransformers(str string, ts ...transform.Transformer) string {
+	for _, t := range ts {
+		modifiedStr, _, err := transform.String(t, str)
+		if err == nil {
+			str = modifiedStr
+		}
+	}
+	return str
+}
+
+/*
 StripNonPrintingTransform is a Unicode stream transformer object which removes
 all occurrences of non-printing and non-spacing rune characters from a string.
 */
