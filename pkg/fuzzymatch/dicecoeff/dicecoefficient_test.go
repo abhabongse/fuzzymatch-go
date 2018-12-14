@@ -1,4 +1,4 @@
-package bigrams
+package dicecoeff
 
 import (
 	"math"

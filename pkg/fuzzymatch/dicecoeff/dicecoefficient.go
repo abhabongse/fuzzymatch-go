@@ -3,7 +3,7 @@ Package bigrams contains a collection of algorithm implementations regarding big
 string data. Currently there is only one algorithm: the Sørensen–Dice Coefficient
 (sometimes called the Dice Similarity Coefficient; DSC).
 */
-package bigrams
+package dicecoeff
 
 import "sort"
 
