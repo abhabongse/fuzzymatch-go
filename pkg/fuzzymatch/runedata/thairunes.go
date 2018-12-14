@@ -1,6 +1,9 @@
 package runedata
 
-import "unicode"
+import (
+	"golang.org/x/text/unicode/rangetable"
+	"unicode"
+)
 
 var ThaiCharacterKoKai = '\u0e01'
 var ThaiCharacterKhoKhai = '\u0e02'
@@ -204,6 +207,9 @@ var ThaiDescendingVowels = &unicode.RangeTable{
 // ThaiAscendingOthers is a collection of Thai non-vowel characters residing above Thai consonants
 var ThaiAscendingOthers = &unicode.RangeTable{
 	R16: []unicode.Range16{
-		{ThaiRunes[ThaiCharacterMaitaikhu], ThaiRunes[ThaiCharacterThanthakhat], 1},
+		{ThaiRunes[ThaiCharacterMaitaikhu], ThaiRunes[ThaiCharacterFongman], 1},
 	},
 }
+
+// ThaiNonSpacingMarks is a collection of all non-spacing mark (Mn) characters in Thai Unicode block
+var ThaiNonSpacingMarks = rangetable.Merge(ThaiAscendingVowels, ThaiDescendingVowels, ThaiAscendingOthers)
