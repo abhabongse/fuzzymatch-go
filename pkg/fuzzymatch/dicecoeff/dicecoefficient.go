@@ -1,6 +1,6 @@
 /*
-Package bigrams contains a collection of algorithm implementations regarding bigrams of
-string data. Currently there is only one algorithm: the Sørensen–Dice Coefficient
+Package dicecoeff contains a collection of algorithm implementations regarding bigrams
+of string data. Currently there is only one algorithm: the Sørensen–Dice Coefficient
 (sometimes called the Dice Similarity Coefficient; DSC).
 */
 package dicecoeff
