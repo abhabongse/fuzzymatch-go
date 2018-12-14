@@ -64,6 +64,9 @@ func normalizeString(str string) string {
 
 	// Special rule: combine characters for sara-ae and sara-am
 	str = normalization.RecombineThaiGrams(str)
+	// Special rule: remove accidentally repeated non-spacing marks such as
+	// tonal marks, ascending vowels, descending vowels, etc.
+	str = normalization.RemoveThaiRepeatedAccidents(str)
 
 	// TODO: introduce multiple string normalization functions
 
