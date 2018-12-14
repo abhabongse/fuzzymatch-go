@@ -54,27 +54,27 @@ func UnitDist(c, d rune) float64 {
 }
 
 /*
-FuzzySubstErrorDist is a function returning substitution penalties with values
+FuzzySubstitutionErrorDist is a function returning substitution penalties with values
 between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func FuzzySubstErrorDist(c, d rune) float64 {
+func FuzzySubstitutionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}
-	if value, ok := substErrorTable[RunePair{c, d}]; ok {
+	if value, ok := substitutionErrorTable[RunePair{c, d}]; ok {
 		return value
 	}
-	if value, ok := substErrorTable[RunePair{d, c}]; ok {
+	if value, ok := substitutionErrorTable[RunePair{d, c}]; ok {
 		return value
 	}
 	return 1 // Full substitution penalty
 }
 
 /*
-substErrorTable maps a pair of rune characters to their substitution errors.
+substitutionErrorTable maps a pair of rune characters to their substitution errors.
 */
-var substErrorTable = map[RunePair]float64{
+var substitutionErrorTable = map[RunePair]float64{
 
 	// The following 3 rules describes pairs of characters Thai people use interchangeably
 	RunePair{runedata.ThaiCharacterDoChada, runedata.ThaiCharacterToPatak}:              0.9,
@@ -96,27 +96,27 @@ var substErrorTable = map[RunePair]float64{
 }
 
 /*
-FuzzyTransErrorDist is a function returning transposition penalties with values
+FuzzyTranspositionErrorDist is a function returning transposition penalties with values
 between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func FuzzyTransErrorDist(c, d rune) float64 {
+func FuzzyTranspositionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}
-	if value, ok := transErrorTable[RunePair{c, d}]; ok {
+	if value, ok := transpositionErrorTable[RunePair{c, d}]; ok {
 		return value
 	}
-	if value, ok := transErrorTable[RunePair{d, c}]; ok {
+	if value, ok := transpositionErrorTable[RunePair{d, c}]; ok {
 		return value
 	}
 	return 1 // Full transposition penalty
 }
 
 /*
-transErrorTable maps a pair of rune characters to their transposition error penalties.
+transpositionErrorTable maps a pair of rune characters to their transposition error penalties.
 */
-var transErrorTable = map[RunePair]float64{
+var transpositionErrorTable = map[RunePair]float64{
 	// The following 4 rules are transpositions between SaraAm and tonal marks
 	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiEk}:       0.3,
 	RunePair{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiTho}:      0.3,

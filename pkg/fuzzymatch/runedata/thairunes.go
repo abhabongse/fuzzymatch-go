@@ -1,6 +1,3 @@
-/*
-Source file 'thairunes.go' contain data regarding characters in Thai Unicode block.
-*/
 package runedata
 
 import "unicode"
@@ -96,7 +93,7 @@ var ThaiCharacterKhomut = '\u0e5b'
 /*
 ThaiRunes remaps each character in Thai Unicode block from the rune type back
 to the unsigned 16-bit integer type (used in the RangeTable definitions).
- */
+*/
 var ThaiRunes = map[rune]uint16{
 	ThaiCharacterKoKai:          0x0e01,
 	ThaiCharacterKhoKhai:        0x0e02,

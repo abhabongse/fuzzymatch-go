@@ -27,8 +27,8 @@ func TestFuzzySubstErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FuzzySubstErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("FuzzySubstErrorDist() = %v, want %v", got, tt.want)
+			if got := FuzzySubstitutionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("FuzzySubstitutionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -52,8 +52,8 @@ func TestFuzzyTransErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FuzzyTransErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("FuzzyTransErrorDist() = %v, want %v", got, tt.want)
+			if got := FuzzyTranspositionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("FuzzyTranspositionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
