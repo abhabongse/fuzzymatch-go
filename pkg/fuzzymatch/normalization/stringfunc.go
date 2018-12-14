@@ -14,20 +14,32 @@ func ReSpace(str string) string {
 }
 
 /*
-RecombineThaiGrams recombines two kinds of bigrams into single characters:
+RecombineThaiGrams searches for Thai characters written as a non-canonical bigrams
+and turn them into its appropriate canonical form. There are 2 patterns:
 (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
 */
 func RecombineThaiGrams(str string) string {
 	// TODO: implement this function in terms of a string transformer
-	// TODO: separate table configuration from function
 
-	preSaraAm := string([]rune{runedata.ThaiCharacterNikhahit, runedata.ThaiCharacterSaraAa})
-	postSaraAm := string([]rune{runedata.ThaiCharacterSaraAm})
-	str = strings.Replace(str, preSaraAm, postSaraAm, -1)
-
-	preSaraAe := string([]rune{runedata.ThaiCharacterSaraE, runedata.ThaiCharacterSaraE})
-	postSaraAe := string([]rune{runedata.ThaiCharacterSaraAe})
-	str = strings.Replace(str, preSaraAe, postSaraAe, -1)
-
+	for _, pattern := range thaiRecombinationTable {
+		str = strings.Replace(str, pattern.oldString, pattern.newString, -1)
+	}
 	return str
+}
+
+/*
+thaiRecombinationTable is a list of recombination patterns: each pattern describes
+an old substring portion which should be replaced with a new substring.
+*/
+var thaiRecombinationTable = []struct{ oldString, newString string }{
+	{
+		// Replacing nikhahit + sara-aa = sara-am
+		string([]rune{runedata.ThaiCharacterNikhahit, runedata.ThaiCharacterSaraAa}),
+		string([]rune{runedata.ThaiCharacterSaraAm}),
+	},
+	{
+		// Replacing sara-e + sara-e = sara-ae
+		string([]rune{runedata.ThaiCharacterSaraE, runedata.ThaiCharacterSaraE}),
+		string([]rune{runedata.ThaiCharacterSaraAe}),
+	},
 }
