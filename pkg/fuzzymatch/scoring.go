@@ -6,9 +6,9 @@ interested in the function SimilarityScore.
 package fuzzymatch
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/canonical"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/dicecoeff"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/canonical"
 	"golang.org/x/text/runes"
 	"math"
 )
@@ -63,8 +63,6 @@ func canonicalizeString(str string) string {
 	// Special rule: remove accidentally repeated non-spacing marks such as
 	// tonal marks, ascending vowels, descending vowels, etc.
 	str = canonical.RemoveThaiRepeatedAccidents(str)
-
-	// TODO: introduce multiple string canonicalization functions
 
 	return str
 }
