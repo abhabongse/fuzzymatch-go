@@ -8,7 +8,7 @@ package fuzzymatch
 import (
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/dicecoeff"
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/normalization"
+	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/canonical"
 	"golang.org/x/text/runes"
 	"math"
 )
@@ -17,58 +17,54 @@ import (
 SimilarityScore is the definitive function which computes the similarity score
 between two input strings. The returned score value is a floating point between
 0 (meaning two strings are very distinct) and 1 (meaning two strings are identical
-when normalized).
+when canonicalized).
 */
 func SimilarityScore(fst, snd string) float64 {
-	normalizedFst := normalizeString(fst)
-	normalizedSnd := normalizeString(snd)
+	canonicalFst := canonicalizeString(fst)
+	canonicalSnd := canonicalizeString(snd)
 
 	// Breaking ties to save memory in the long run
-	if len(normalizedFst) < len(normalizedSnd) {
-		normalizedFst, normalizedSnd = normalizedSnd, normalizedFst
+	if len(canonicalFst) < len(canonicalSnd) {
+		canonicalFst, canonicalSnd = canonicalSnd, canonicalFst
 	}
 
-	optDistRatio := optimalAlignmentDistanceRatio(normalizedFst, normalizedSnd)
-	diceCoefficient := dicecoeff.DiceSimilarityCoefficient(normalizedFst, normalizedSnd)
+	optDistRatio := optimalAlignmentDistanceRatio(canonicalFst, canonicalSnd)
+	diceCoefficient := dicecoeff.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
 	return clipNumberToBound(combinedScore, 0.0, 1.0)
 }
 
 /*
-normalizeString normalizes an input string via various normalization methods.
+canonicalizeString normalizes an input string via various canonicalization methods.
 */
-func normalizeString(str string) string {
+func canonicalizeString(str string) string {
 
-	str = normalization.ApplyTransformers(
+	str = canonical.ApplyTransformers(
 		str,
 		// Sanitize for errors in decoding of Unicode string
 		runes.ReplaceIllFormed(),
 		// Remove non-printing rune characters
-		normalization.StripNonPrintTransformer,
+		canonical.StripNonPrintTransformer,
 		// Replace all white-spaces to normal space
-		normalization.ToNormalSpaceTransformer,
+		canonical.ToNormalSpaceTransformer,
+		// Remove diacritical marks above latin characters
+		canonical.RemoveAccentsTransformer,
+		// Convert western characters into their lowercase forms
+		canonical.ToLowerTransformer,
 	)
 
 	// Re-spacing the entire string by stripping out leading+trailing spaces,
 	// and then transforming multiple consecutive spaces with a single space
-	str = normalization.ReSpace(str)
-
-	str = normalization.ApplyTransformers(
-		str,
-		// Remove diacritical marks above latin characters
-		normalization.RemoveAccentsTransformer,
-		// Convert western characters into their lowercase forms
-		normalization.ToLowerTransformer,
-	)
+	str = canonical.ReSpace(str)
 
 	// Special rule: combine characters for sara-ae and sara-am
-	str = normalization.RecombineThaiGrams(str)
+	str = canonical.RecombineThaiGrams(str)
 	// Special rule: remove accidentally repeated non-spacing marks such as
 	// tonal marks, ascending vowels, descending vowels, etc.
-	str = normalization.RemoveThaiRepeatedAccidents(str)
+	str = canonical.RemoveThaiRepeatedAccidents(str)
 
-	// TODO: introduce multiple string normalization functions
+	// TODO: introduce multiple string canonicalization functions
 
 	return str
 }
@@ -76,8 +72,7 @@ func normalizeString(str string) string {
 /*
 optimalAlignmentDistanceRatio computes the unit-normalized optimal alignment
 distance metrics between two input strings. This unit-normalization is conducted
-to make sure that the returned score is between 0 and 1. The term "normalization"
-used here is not to be confused with the normalization of strings.
+to make sure that the returned score is between 0 and 1.
 */
 func optimalAlignmentDistanceRatio(fst, snd string) float64 {
 	// TODO: replace SimpleAlignmentDistance with the customized distance

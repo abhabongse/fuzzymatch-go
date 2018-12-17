@@ -1,4 +1,4 @@
-package normalization
+package canonical
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/runedata"
