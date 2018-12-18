@@ -30,15 +30,9 @@ func PlainSimilarityScore(fst, snd string) float64 {
 		canonicalFst, canonicalSnd = canonicalSnd, canonicalFst
 	}
 
-	optDistRatio := 1.0 - NormalizedSimpleAlignmentDistance(canonicalFst, canonicalSnd)
+	optDistRatio := 1.0 - editdistance.NormalizedSimpleAlignmentDistance(canonicalFst, canonicalSnd)
 	diceCoefficient := dicecoefficient.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
 	return clipNumberToBound(combinedScore, 0.0, 1.0)
 }
-
-/*
-NormalizedSimpleAlignmentDistance is the normalized version of the simplified
-Optimal Alignment distance scoring function with unit-distance penalty.
-*/
-var NormalizedSimpleAlignmentDistance = editdistance.MakeNormalized(editdistance.SimpleAlignmentDistance)
