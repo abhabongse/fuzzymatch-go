@@ -8,7 +8,7 @@ string space into a normalized version. Thus, the returned score of the
 new edit-distance function should always be between 0 (meaning two strings
 are very similar) and 1 (meaning two strings are very different).
 */
-func MakeNormalized(computeDistance EditDistanceFunction) EditDistanceFunction {
+func MakeNormalized(computeDistance StringDistanceFunction) StringDistanceFunction {
 	computeNormalizedDistance := func(fst, snd string) float64 {
 		dist := computeDistance(fst, snd)
 		fstLength := computeDistance(fst, "")
@@ -21,3 +21,15 @@ func MakeNormalized(computeDistance EditDistanceFunction) EditDistanceFunction {
 	}
 	return computeNormalizedDistance
 }
+
+/*
+NormalizedSimpleAlignmentDistance is the normalized version of the SimpleAlignmentDistance
+scoring function whose outputs are guaranteed to be between 0 (meaning that strings are
+very similar) and 1 (meaning that strings very distinct). The original distance score
+is normalized against the max length of two strings.
+*/
+var NormalizedSimpleAlignmentDistance = MakeNormalized(SimpleAlignmentDistance)
+
+/*
+NormalizedFuzzyAlignmentDistance
+*/

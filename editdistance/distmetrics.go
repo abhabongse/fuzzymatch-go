@@ -5,12 +5,18 @@ import (
 )
 
 /*
-RunePair is a struct type for a pair of runes.
+StringDistanceFunction is a type alias for string edit-distance functions.
+*/
+type StringDistanceFunction = func(string, string) float64
+
+/*
+RunePair is a struct type for a pair of runes. This type is introduced solely
+so that a pair of runes can be used as keys to a map structure.
 */
 type RunePair = struct{ c, d rune }
 
 /*
-RuneDistanceMetric is an umbrella type representing a symmetric function which
+RuneDistanceMetric is an umbrella type alias representing a symmetric function which
 computes a distance score (penalty) between a given pair of runes. There are two
 different kinds of distance metrics: substitution penalty and transposition penalty.
 
@@ -35,11 +41,6 @@ and 2 (meaning that two runes are hardly mistaken with each other).
 type RuneDistanceMetric = func(rune, rune) float64
 
 /*
-EditDistanceFunction is an alias for edit-distance functions in string space.
-*/
-type EditDistanceFunction = func(string, string) float64
-
-/*
 UnitDist is an indicator function which returns 1 if two input characters differ
 and returns 0 otherwise. This function can be used for both the substitution and the
 transposition penalties.
@@ -59,11 +60,11 @@ func UnitDist(c, d rune) float64 {
 }
 
 /*
-FuzzySubstitutionErrorDist is a function returning substitution penalties with values
+PartialSubstitutionErrorDist is a function returning substitution penalties with values
 between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func FuzzySubstitutionErrorDist(c, d rune) float64 {
+func PartialSubstitutionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}
@@ -101,11 +102,11 @@ var substitutionErrorTable = map[RunePair]float64{
 }
 
 /*
-FuzzyTranspositionErrorDist is a function returning transposition penalties with values
+PartialTranspositionErrorDist is a function returning transposition penalties with values
 between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func FuzzyTranspositionErrorDist(c, d rune) float64 {
+func PartialTranspositionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}

@@ -30,7 +30,7 @@ func TestReSpace(t *testing.T) {
 	}
 }
 
-func TestNormalizeThaiGrams(t *testing.T) {
+func TestRecombineThaiGrams(t *testing.T) {
 	type args struct {
 		str string
 	}

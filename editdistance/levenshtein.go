@@ -12,14 +12,6 @@ func SimpleAlignmentDistance(fst, snd string) float64 {
 }
 
 /*
-NormalizedSimpleAlignmentDistance is the normalized version of the SimpleAlignmentDistance
-scoring function whose outputs are guaranteed to be between 0 (meaning that strings are
-very similar) and 1 (meaning that strings very distinct). The original distance score
-is normalized against the max length of two strings.
-*/
-var NormalizedSimpleAlignmentDistance = MakeNormalized(SimpleAlignmentDistance)
-
-/*
 OptimalAlignmentDistance computes the "optimal alignment distance" between two given
 string, viewed as a sequence of rune characters.
 

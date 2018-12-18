@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestSimilarityScore(t *testing.T) {
+func TestPlainSimilarityScore(t *testing.T) {
 	type args struct {
 		fst string
 		snd string

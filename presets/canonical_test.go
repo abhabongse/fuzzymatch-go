@@ -2,7 +2,7 @@ package presets
 
 import "testing"
 
-func TestStandardThaiCanonicalize(t *testing.T) {
+func TestThaiStringCanonicalize(t *testing.T) {
 	type args struct {
 		str string
 	}

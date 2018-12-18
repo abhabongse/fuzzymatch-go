@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestFuzzySubstErrorDist(t *testing.T) {
+func TestPartialSubstitutionErrorDist(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -27,14 +27,14 @@ func TestFuzzySubstErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FuzzySubstitutionErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("FuzzySubstitutionErrorDist() = %v, want %v", got, tt.want)
+			if got := PartialSubstitutionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("PartialSubstitutionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFuzzyTransErrorDist(t *testing.T) {
+func TestPartialTranspositionErrorDist(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -52,8 +52,8 @@ func TestFuzzyTransErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FuzzyTranspositionErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("FuzzyTranspositionErrorDist() = %v, want %v", got, tt.want)
+			if got := PartialTranspositionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("PartialTranspositionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
