@@ -1,4 +1,4 @@
-package preset
+package presets
 
 import (
 	"fmt"

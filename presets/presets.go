@@ -1,17 +1,16 @@
 /*
-Package preset is a collection of pre-combined approximate string matching
+Package presets is a collection of pre-combined approximate string matching
 algorithms which determines a similarity score between two strings.
 
 In most cases, you would be interested in the function 'SimilarityScore'.
 */
-package preset
+package presets
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/canonical"
 	"github.com/abhabongse/fuzzymatch-go/dicecoefficient"
 	"github.com/abhabongse/fuzzymatch-go/editdistance"
 	"golang.org/x/text/runes"
-	"math"
 )
 
 /*
@@ -29,7 +28,7 @@ func SimilarityScore(fst, snd string) float64 {
 		canonicalFst, canonicalSnd = canonicalSnd, canonicalFst
 	}
 
-	optDistRatio := optimalAlignmentDistanceRatio(canonicalFst, canonicalSnd)
+	optDistRatio := 1.0 - optimalAlignmentDistanceRatio(canonicalFst, canonicalSnd)
 	diceCoefficient := dicecoefficient.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
@@ -68,36 +67,5 @@ func canonicalize(str string) string {
 	return str
 }
 
-/*
-optimalAlignmentDistanceRatio computes the unit-normalized optimal alignment
-distance metrics between two input strings. This unit-normalization is conducted
-to make sure that the returned score is between 0 and 1.
-*/
-func optimalAlignmentDistanceRatio(fst, snd string) float64 {
-	// TODO: replace SimpleAlignmentDistance with the customized distance
-	//       metric version of the OptimalAlignmentDistance
-	dist := editdistance.SimpleAlignmentDistance(fst, snd)
-	fstLength := editdistance.SimpleAlignmentDistance(fst, "")
-	sndLength := editdistance.SimpleAlignmentDistance("", snd)
-	score := 1.0 - (dist / math.Max(fstLength, sndLength))
-	if math.IsNaN(score) { // both are empty strings
-		score = 1.0
-	}
-	return score
-}
-
-/*
-clipNumberToBound readjust the provided values in between the given range as
-defined by arguments upper and lower. If the given value is smaller than lower,
-lower is returned; if the given value is larger than upper, upper is returned;
-otherwise, the value itself is returned.
-*/
-func clipNumberToBound(value, lower, upper float64) float64 {
-	if value < lower {
-		return lower
-	}
-	if value > upper {
-		return upper
-	}
-	return value
-}
+// Normalized version of the Optimal Alignment distance scoring function with unit-distance penalty
+var optimalAlignmentDistanceRatio = editdistance.MakeNormalized(editdistance.SimpleAlignmentDistance)

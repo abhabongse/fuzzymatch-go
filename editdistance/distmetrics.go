@@ -35,6 +35,11 @@ and 2 (meaning that two runes are hardly mistaken with each other).
 type RuneDistanceMetric = func(rune, rune) float64
 
 /*
+EditDistanceFunction is an alias for edit-distance functions in string space.
+*/
+type EditDistanceFunction = func(string, string) float64
+
+/*
 UnitDist is an indicator function which returns 1 if two input characters differ
 and returns 0 otherwise. This function can be used for both the substitution and the
 transposition penalties.
