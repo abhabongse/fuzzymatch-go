@@ -1,14 +1,15 @@
 /*
-Package fuzzymatch implements an approximate string matching algorithm to determine
-the similarity score between two given strings. In most cases, you would be
-interested in the function SimilarityScore.
+Package preset is a collection of pre-combined approximate string matching
+algorithms which determines a similarity score between two strings.
+
+In most cases, you would be interested in the function 'SimilarityScore'.
 */
-package fuzzymatch
+package preset
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/canonical"
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/dicecoeff"
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/editdistance"
+	"github.com/abhabongse/fuzzymatch-go/canonical"
+	"github.com/abhabongse/fuzzymatch-go/dicecoefficient"
+	"github.com/abhabongse/fuzzymatch-go/editdistance"
 	"golang.org/x/text/runes"
 	"math"
 )
@@ -20,8 +21,8 @@ between two input strings. The returned score value is a floating point between
 when canonicalized).
 */
 func SimilarityScore(fst, snd string) float64 {
-	canonicalFst := canonicalizeString(fst)
-	canonicalSnd := canonicalizeString(snd)
+	canonicalFst := canonicalize(fst)
+	canonicalSnd := canonicalize(snd)
 
 	// Breaking ties to save memory in the long run
 	if len(canonicalFst) < len(canonicalSnd) {
@@ -29,16 +30,16 @@ func SimilarityScore(fst, snd string) float64 {
 	}
 
 	optDistRatio := optimalAlignmentDistanceRatio(canonicalFst, canonicalSnd)
-	diceCoefficient := dicecoeff.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
+	diceCoefficient := dicecoefficient.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
 	return clipNumberToBound(combinedScore, 0.0, 1.0)
 }
 
 /*
-canonicalizeString normalizes an input string via various canonicalization methods.
+canonicalize normalizes an input string via various canonicalization methods.
 */
-func canonicalizeString(str string) string {
+func canonicalize(str string) string {
 
 	str = canonical.ApplyTransformers(
 		str,

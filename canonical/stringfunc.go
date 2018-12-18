@@ -1,7 +1,7 @@
 package canonical
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/pkg/fuzzymatch/runedata"
+	"github.com/abhabongse/fuzzymatch-go/runedata"
 	"strings"
 	"unicode"
 )

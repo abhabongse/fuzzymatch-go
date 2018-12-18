@@ -1,9 +1,8 @@
 /*
-Package dicecoeff contains a collection of algorithm implementations regarding bigrams
-of string data. Currently there is only one algorithm: the Sørensen–Dice Coefficient
-(sometimes called the Dice Similarity Coefficient; DSC).
+Package dicecoefficient contains an algorithm implementation of the Sørensen–Dice
+Coefficient (sometimes called the Dice Similarity Coefficient; DSC).
 */
-package dicecoeff
+package dicecoefficient
 
 import "sort"
 

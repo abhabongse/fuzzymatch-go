@@ -1,4 +1,4 @@
-package dicecoeff
+package dicecoefficient
 
 import (
 	"math"
