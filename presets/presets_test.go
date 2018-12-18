@@ -25,8 +25,8 @@ func TestSimilarityScore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SimilarityScore(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
-				t.Errorf("SimilarityScore() = %v, want %v", got, tt.want)
+			if got := PlainSimilarityScore(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
+				t.Errorf("PlainSimilarityScore() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -34,6 +34,6 @@ func TestSimilarityScore(t *testing.T) {
 
 func ExampleSimilarityScore() {
 	// Find the similarity score between "saturday" and "sunday"
-	score := SimilarityScore("saturday", "sunday")
+	score := PlainSimilarityScore("saturday", "sunday")
 	fmt.Println(score)
 }
