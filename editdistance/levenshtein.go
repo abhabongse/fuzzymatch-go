@@ -12,6 +12,17 @@ func SimpleAlignmentDistance(fst, snd string) float64 {
 }
 
 /*
+ThaiOptimalAlignmentDistance is another version of the OptimalAlignmentDistance function
+customized especially for Thai scripts. Some of the edit operations (insertions, deletions,
+substitutions, and adjacent character transpositions) may incur penalties smaller than 1.
+
+TODO: write unit tests
+*/
+func ThaiOptimalAlignmentDistance(fst, snd string) float64 {
+	return OptimalAlignmentDistance(fst, snd, ThaiSubstitutionErrorDist, ThaiTranspositionErrorDist)
+}
+
+/*
 OptimalAlignmentDistance computes the "optimal alignment distance" between two given
 string, viewed as a sequence of rune characters.
 

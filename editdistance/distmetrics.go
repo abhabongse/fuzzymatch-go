@@ -60,11 +60,11 @@ func UnitDist(c, d rune) float64 {
 }
 
 /*
-PartialSubstitutionErrorDist is a function returning substitution penalties with values
+ThaiSubstitutionErrorDist is a function returning substitution penalties with values
 between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func PartialSubstitutionErrorDist(c, d rune) float64 {
+func ThaiSubstitutionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}
@@ -102,11 +102,11 @@ var substitutionErrorTable = map[RunePair]float64{
 }
 
 /*
-PartialTranspositionErrorDist is a function returning transposition penalties with values
+ThaiTranspositionErrorDist is a function returning transposition penalties with values
 between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
 between rune characters c and d are more likely, then the penalty will be smaller.
 */
-func PartialTranspositionErrorDist(c, d rune) float64 {
+func ThaiTranspositionErrorDist(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
 	}

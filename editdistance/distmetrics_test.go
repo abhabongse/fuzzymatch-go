@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestPartialSubstitutionErrorDist(t *testing.T) {
+func TestThaiSubstitutionErrorDist(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -27,14 +27,14 @@ func TestPartialSubstitutionErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PartialSubstitutionErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("PartialSubstitutionErrorDist() = %v, want %v", got, tt.want)
+			if got := ThaiSubstitutionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("ThaiSubstitutionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestPartialTranspositionErrorDist(t *testing.T) {
+func TestThaiTranspositionErrorDist(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -52,8 +52,8 @@ func TestPartialTranspositionErrorDist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PartialTranspositionErrorDist(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("PartialTranspositionErrorDist() = %v, want %v", got, tt.want)
+			if got := ThaiTranspositionErrorDist(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("ThaiTranspositionErrorDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
