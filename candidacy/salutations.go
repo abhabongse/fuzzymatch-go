@@ -20,6 +20,12 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 	candidates = append(candidates, Decomposite{"", name})
 
 	// TODO: Generate decomposites of salutation titles
+	for _, regex := range SalutationTitleRegExps {
+		result := regex.FindStringSubmatch(name)
+		if len(result) > 0 {
+			candidates = append(candidates, Decomposite{result[1], result[2]})
+		}
+	}
 
 	return candidates
 }
