@@ -30,9 +30,9 @@ func DiceSimilarityCoefficient(fst, snd string) float64 {
 			j++
 		} else if j == sndBigramSeq.Len() {
 			i++
-		} else if less(&fstBigramSeq, i, &sndBigramSeq, j) {
+		} else if less(fstBigramSeq, i, sndBigramSeq, j) {
 			i++
-		} else if less(&sndBigramSeq, j, &fstBigramSeq, i) {
+		} else if less(sndBigramSeq, j, fstBigramSeq, i) {
 			j++
 		} else {
 			i++
@@ -116,13 +116,13 @@ Based on a given string (provided as a slice of rune characters), this function 
 generate a new proxy object representing a sequence of all possible bigrams. Then this
 sequence of bigrams is sorted lexicographically before it is returned.
 */
-func newSortedBigramSequence(runesData []rune) bigramSequence {
+func newSortedBigramSequence(runesData []rune) *bigramSequence {
 	runesLength := len(runesData)
 	indexMap := make([]int, runesLength+1)
 	for i := 0; i <= runesLength; i++ {
 		indexMap[i] = i
 	}
-	bgSeq := bigramSequence{runesData, indexMap}
+	bgSeq := &bigramSequence{runesData, indexMap}
 	sort.Sort(bgSeq)
 	return bgSeq
 }
