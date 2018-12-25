@@ -1,5 +1,7 @@
 package candidacy
 
+import "regexp"
+
 /*
 Decomposition is a type struct for the split between the salutation and
 the bare name sans the salutation.
@@ -17,26 +19,34 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 	candidates := make([]Decomposite, 0)
 	candidates = append(candidates, Decomposite{"", name})
 
-	// TODO: Check for English salutations
-
-	// TODO: Check for Thai salutations
+	// TODO: Generate decomposites of salutation titles
 
 	return candidates
 }
 
-var basicEnglishSalutations = []string{
-	"mr",
-	"mrs",
-	"ms",
-	"mister",
-	"miss",
-	"master",
-}
-
-var basicThaiSalutations = []string{
-	"นาย",
-	"นาง",
-	"นางสาว",
-	"เด็กชาย",
-	"เด็กหญิง",
+/*
+SalutationTitleRegExps is a sequence of all compiled regular expression
+objects which separates salutation titles from the actual full name part.
+*/
+var SalutationTitleRegExps = []*regexp.Regexp{
+	// English full salutation titles: space separator required
+	regexp.MustCompile("^(mister)(?: )(.*)$"),
+	regexp.MustCompile("^(miss)(?: )(.*)$"),
+	regexp.MustCompile("^(master)(?: )(.*)$"),
+	// English abbreviated salutation titles: separator required
+	regexp.MustCompile("^(mr)(?: |\\. |\\.)(.*)$"),
+	regexp.MustCompile("^(mrs)(?: |\\. |\\.)(.*)$"),
+	regexp.MustCompile("^(ms)(?: |\\. |\\.)(.*)$"),
+	// Thai full salutation titles: separator optional
+	regexp.MustCompile("^(นาย)(?: ?)(.*)$"),
+	regexp.MustCompile("^(นาง)(?: ?)(.*)$"),
+	regexp.MustCompile("^(นางสาว)(?: ?)(.*)$"),
+	regexp.MustCompile("^(เด็กชาย)(?: ?)(.*)$"),
+	regexp.MustCompile("^(เด็กหญิง)(?: ?)(.*)$"),
+	// Thai abbreviated salutation titles: space separator required
+	regexp.MustCompile("^(ดช)(?: )(.*)$"),
+	regexp.MustCompile("^(ดญ)(?: )(.*)$"),
+	// Thai dot-abbreviated salutation titles: separator optional
+	regexp.MustCompile("^(ด\\.ช\\.)(?: ?)(.*)$"),
+	regexp.MustCompile("^(ด\\.ญ\\.)(?: ?)(.*)$"),
 }
