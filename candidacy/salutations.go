@@ -12,14 +12,14 @@ the Bare name sans the salutation.
 type Decomposite = struct{ Salute, Bare string }
 
 /*
-GenerateSalutationDecomposites generates a sequence of all possible splits
+GetAllSalutationDecomposites generates a sequence of all possible splits
 (i.e. decomposites) of salutation from a given name input. Output sequences
 are sorted according to the extracted salutations first.
 
 For this function, only basic English and Thai salutations are concerned:
 mr, mrs, ms, mister, miss, master, นาย, นาง, นางสาว, เด็กชาย, เด็กหญิง.
 */
-func GenerateSalutationDecomposites(name string) []Decomposite {
+func GetAllSalutationDecomposites(name string) []Decomposite {
 	candidates := make([]Decomposite, 0)
 	candidates = append(candidates, Decomposite{"", name})
 
@@ -35,6 +35,19 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 		return candidates[i].Salute < candidates[j].Salute || candidates[i].Salute == candidates[j].Salute && candidates[i].Bare < candidates[j].Bare
 	})
 	return candidates
+}
+
+/*
+PossibleBareNames generates a sequence of all possible bare names which
+are names with salutation titles removed.
+*/
+func PossibleBareNames(name string) []string {
+	salutationDecomposites := GetAllSalutationDecomposites(name)
+	bareNames := make([]string, 0, len(salutationDecomposites))
+	for _, decomposite := range salutationDecomposites {
+		bareNames = append(bareNames, decomposite.Bare)
+	}
+	return bareNames
 }
 
 /*

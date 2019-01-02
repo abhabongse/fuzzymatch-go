@@ -25,16 +25,7 @@ respectively.
 var PlainSimilarityScore, _ = fuzzymatch.NewSimilarityScoreFunction()
 
 var ThaiNameSimilarityScore, _ = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.StringCanonicalization(fuzzymatch.DefaultCanonicalizeString),
-	fuzzymatch.CandidateGeneration(bareNames),
+	fuzzymatch.CandidateGeneration(candidacy.PossibleBareNames),
 	fuzzymatch.RuneDistancePenalties(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
-	fuzzymatch.CombinationWeights(1.0, 1.0),
+	fuzzymatch.CombinationWeights(2.0, 3.0),
 )
-
-func bareNames(name string) []string {
-	candidates := make([]string, 0)
-	for _, decomposite := range candidacy.GenerateSalutationDecomposites(name) {
-		candidates = append(candidates, decomposite.Bare)
-	}
-	return candidates
-}
