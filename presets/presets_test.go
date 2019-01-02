@@ -45,7 +45,7 @@ func TestThaiNameSimilarityScore(t *testing.T) {
 		{"empty & empty", args{"", ""}, 1},
 		{"empty & something", args{"", "sunday"}, 0},
 		{"something & empty", args{"saturday", ""}, 0},
-		{"days of week", args{"saturday", "sunday"}, 9.0 / 16.0},
+		{"days of week", args{"saturday", "sunday"}, 11.0 / 20.0},
 		{"identical after norm #1", args{"\nการแข่งขันจำ schön", "การเเข่ง\x01ขันจํา schon"}, 1},
 		{"identical after norm #2", args{"ที่ของเรา", "ทีีีีี่่่่่่ของเรา"}, 1},
 	}

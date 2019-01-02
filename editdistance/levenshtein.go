@@ -3,13 +3,25 @@ package editdistance
 import "math"
 
 /*
+MakeAlignmentDistanceFunction is a higher-order function which receives the substitution
+and the transposition penalty functions and returns the modified version of the otherwise
+generic OptimalAlignmentDistance function with those specified edit distance metrics.
+The resulting function will receive two input strings and output the distance between them.
+*/
+func MakeAlignmentDistanceFunction(
+	substitutionDistFunc, transpositionDistFunc RuneDistanceMetric,
+) StringDistanceFunction {
+	return func(fst, snd string) float64 {
+		return OptimalAlignmentDistance(fst, snd, substitutionDistFunc, transpositionDistFunc)
+	}
+}
+
+/*
 SimpleAlignmentDistance is a simplified version of the OptimalAlignmentDistance function.
 It assumes that all edit operations (insertions, deletions, substitutions, and adjacent
 character transpositions) will incur unit penalties.
 */
-func SimpleAlignmentDistance(fst, snd string) float64 {
-	return OptimalAlignmentDistance(fst, snd, UnitDist, UnitDist)
-}
+var SimpleAlignmentDistance = MakeAlignmentDistanceFunction(UnitDist, UnitDist)
 
 /*
 ThaiOptimalAlignmentDistance is another version of the OptimalAlignmentDistance function
@@ -18,9 +30,9 @@ substitutions, and adjacent character transpositions) may incur penalties smalle
 
 TODO: write unit tests
 */
-func ThaiOptimalAlignmentDistance(fst, snd string) float64 {
-	return OptimalAlignmentDistance(fst, snd, ThaiSubstitutionErrorDist, ThaiTranspositionErrorDist)
-}
+var ThaiOptimalAlignmentDistance = MakeAlignmentDistanceFunction(
+	ThaiSubstitutionErrorDist, ThaiTranspositionErrorDist,
+)
 
 /*
 OptimalAlignmentDistance computes the "optimal alignment distance" between two given
@@ -91,7 +103,7 @@ is within the order of O(|snd|).
 */
 func OptimalAlignmentDistance(
 	fst, snd string,
-	substDistFunc, transDistFunc RuneDistanceMetric,
+	substitutionDistFunc, transpositionDistFunc RuneDistanceMetric,
 ) float64 {
 	// Convert string into slice of runes
 	fstRunes := []rune(fst)
@@ -115,7 +127,7 @@ func OptimalAlignmentDistance(
 	for zj, d := range sndRunes {
 		// For definitions of d, zj, pj, j, see the next part of the code
 		_, pj, j := resolveColIndex(zj)
-		table[0][j] = table[0][pj] + substDistFunc(0, d)
+		table[0][j] = table[0][pj] + substitutionDistFunc(0, d)
 	}
 
 	// Fill in the dynamic programming table row-by-row
@@ -127,7 +139,7 @@ func OptimalAlignmentDistance(
 		// ppi, pi, i = the before previous, the previous, and the current
 		//     row index in the dynamic programming table space
 
-		table[i][0] = table[pi][0] + substDistFunc(c, 0)
+		table[i][0] = table[pi][0] + substitutionDistFunc(c, 0)
 
 		var pd rune = 0 // rune from the previous column, initialized empty
 		for zj, d := range sndRunes {
@@ -140,10 +152,10 @@ func OptimalAlignmentDistance(
 			// Compute the minimum score for the rune insertions, deletions,
 			// and substitutions only.
 			table[i][j] = math.Min(
-				table[pi][pj]+substDistFunc(c, d),
+				table[pi][pj]+substitutionDistFunc(c, d),
 				math.Min(
-					table[pi][j]+substDistFunc(c, 0),
-					table[i][pj]+substDistFunc(0, d),
+					table[pi][j]+substitutionDistFunc(c, 0),
+					table[i][pj]+substitutionDistFunc(0, d),
 				),
 			)
 			// Now consider the transposition penalty if the last two runes
@@ -151,7 +163,7 @@ func OptimalAlignmentDistance(
 			if pc == d && pd == c {
 				table[i][j] = math.Min(
 					table[i][j],
-					table[ppi][ppj]+transDistFunc(c, d),
+					table[ppi][ppj]+transpositionDistFunc(c, d),
 				)
 			}
 			pd = d
