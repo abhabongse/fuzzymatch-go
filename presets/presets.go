@@ -22,7 +22,7 @@ final similarity score is computed from (1) the simplified Optimal Alignment dis
 score and (2) the Sørensen–Dice coefficient; both scores are combined at the ratio 1:2
 respectively.
 */
-var PlainSimilarityScore, _ = fuzzymatch.NewSimilarityScoreFunction(
+var PlainSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
 	fuzzymatch.CombinationWeights(1.0, 2.0),
 )
 
@@ -33,7 +33,7 @@ PlainSimilarityScore: (1) this function accounts for possible discrepancy in the
 appearance of salutation titles; and (2) this function is powered by non-unit rune
 distance metrics for edit operations — some leniency is given to more common errors.
 */
-var ThaiNameSimilarityScore, _ = fuzzymatch.NewSimilarityScoreFunction(
+var ThaiNameSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
 	fuzzymatch.CandidateGeneration(candidacy.PossibleBareNames),
 	fuzzymatch.RuneDistancePenalties(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
 	fuzzymatch.CombinationWeights(2.0, 3.0),

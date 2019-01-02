@@ -23,7 +23,7 @@ score once by putting them at the global level.
 
 TODO: add usage examples
 */
-func NewSimilarityScoreFunction(setters ...OptionSetter) (func(string, string) float64, error) {
+func NewSimilarityScoreFunction(setters ...OptionSetter) func(string, string) float64 {
 
 	// Let us start from the default configuration
 	config := &options{
@@ -83,7 +83,7 @@ func NewSimilarityScoreFunction(setters ...OptionSetter) (func(string, string) f
 		return bestScore
 	}
 
-	return bestPairDistanceScoreFunction, nil
+	return bestPairDistanceScoreFunction
 }
 
 /*
