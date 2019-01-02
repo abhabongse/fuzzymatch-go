@@ -7,9 +7,9 @@ import (
 
 /*
 Decomposition is a type struct for the split between the salutation and
-the bare name sans the salutation.
+the Bare name sans the salutation.
 */
-type Decomposite = struct{ salute, bare string }
+type Decomposite = struct{ Salute, Bare string }
 
 /*
 GenerateSalutationDecomposites generates a sequence of all possible splits
@@ -30,9 +30,9 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 		}
 	}
 
-	// Sort sequences by salutations first, then by bare name
+	// Sort sequences by salutations first, then by Bare name
 	sort.Slice(candidates, func(i, j int) bool {
-		return candidates[i].salute < candidates[j].salute || candidates[i].salute == candidates[j].salute && candidates[i].bare < candidates[j].bare
+		return candidates[i].Salute < candidates[j].Salute || candidates[i].Salute == candidates[j].Salute && candidates[i].Bare < candidates[j].Bare
 	})
 	return candidates
 }
