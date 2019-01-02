@@ -22,16 +22,16 @@ score and (2) the Sørensen–Dice coefficient; both scores are combined at the 
 respectively.
 */
 func PlainSimilarityScore(fst, snd string) float64 {
-	canonicalFst := ThaiStringCanonicalize(fst)
-	canonicalSnd := ThaiStringCanonicalize(snd)
+	fst = Canonicalize(fst)
+	snd = Canonicalize(snd)
 
 	// Breaking ties to save memory in the long run
-	if len(canonicalFst) < len(canonicalSnd) {
-		canonicalFst, canonicalSnd = canonicalSnd, canonicalFst
+	if len(fst) < len(snd) {
+		fst, snd = snd, fst
 	}
 
-	optDistRatio := 1.0 - editdistance.NormalizedSimpleAlignmentDistance(canonicalFst, canonicalSnd)
-	diceCoefficient := dicecoefficient.DiceSimilarityCoefficient(canonicalFst, canonicalSnd)
+	optDistRatio := 1.0 - editdistance.NormalizedSimpleAlignmentDistance(fst, snd)
+	diceCoefficient := dicecoefficient.DiceSimilarityCoefficient(fst, snd)
 
 	combinedScore := (optDistRatio + 2.0*diceCoefficient) / 3.0
 	return clipNumberToBound(combinedScore, 0.0, 1.0)

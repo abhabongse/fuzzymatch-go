@@ -19,8 +19,8 @@ func TestThaiStringCanonicalize(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ThaiStringCanonicalize(tt.args.str); got != tt.want {
-				t.Errorf("ThaiStringCanonicalize() = %v, want %v", got, tt.want)
+			if got := Canonicalize(tt.args.str); got != tt.want {
+				t.Errorf("Canonicalize() = %v, want %v", got, tt.want)
 			}
 		})
 	}

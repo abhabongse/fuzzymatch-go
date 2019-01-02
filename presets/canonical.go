@@ -6,10 +6,10 @@ import (
 )
 
 /*
-ThaiStringCanonicalize normalizes an input string via various string canonicalization
+Canonicalize normalizes an input string via various string canonicalization
 methods specialized for string containing Thai scripts.
 */
-func ThaiStringCanonicalize(str string) string {
+func Canonicalize(str string) string {
 
 	str = canonical.ApplyTransformers(
 		str,
