@@ -1,3 +1,8 @@
+/*
+Package fuzzymatch contains the customizable factory which generates string similarity
+scoring functions based on various configurations such as how strings are canonicalized
+or which rune distance metrics are used to measure distance between strings.
+*/
 package fuzzymatch
 
 import (
@@ -9,62 +14,69 @@ import (
 )
 
 /*
-NewSimilarityScoreComputer creates a new function which computes similarity
-scores between two given inputs based on given option setters.
+NewSimilarityScoreFunction constructs a new function to compute the string similarity
+scores from two input strings based on the provided option setters.
+
+This function follow Go's pattern of functional options. Since this function is
+computationally intensive, one possible optimization is to create a string similarity
+score once by putting them at the global level.
+
+TODO: add usage examples
 */
 func NewSimilarityScoreFunction(setters ...OptionSetter) (func(string, string) float64, error) {
 
-	// Default configuration
+	// Let us start from the default configuration
 	config := &options{
-		stringCanonicalization: DefaultCanonicalizeString,
-		candidateGeneration:    DefaultGenerateCandidates,
-		substitutionPenalty:    editdistance.UnitDist,
-		transpositionPenalty:   editdistance.UnitDist,
-		optimalAlignmentWeight: 1.0,
-		diceSimilarityWeight:   2.0,
+		stringCanonicalizationFunc: DefaultCanonicalizeString,
+		candidateGenerationFunc:    DefaultGenerateCandidates,
+		substitutionPenaltyFunc:    editdistance.UnitDist,
+		transpositionPenaltyFunc:   editdistance.UnitDist,
+		optimalAlignmentWeight:     1.0,
+		diceSimilarityWeight:       0.0,
 	}
 
-	// Apply option setters
+	// For each addition option setters, apply them to the configuration structure
 	for _, setter := range setters {
 		if err := setter(config); err != nil {
-			return nil, err
+			return nil, err // short-circuit if there is an error
 		}
 	}
 
-	// Build a customized version of the normalized Optimal Alignment score based on
-	// the configured substitution and transposition penalty functions
-	customizedOptimalAlignmentDistance := editdistance.MakeNormalized(
-		func(fst, snd string) float64 {
-			return editdistance.OptimalAlignmentDistance(fst, snd, config.substitutionPenalty, config.transpositionPenalty)
-		})
+	// Based on the configured substitution and transposition penalty functions, we build
+	// a customized version of the normalized Optimal Alignment score.
+	customOptimalAlignmentDistance := editdistance.MakeNormalized(editdistance.MakeAlignmentDistanceFunction(
+		config.substitutionPenaltyFunc, config.transpositionPenaltyFunc,
+	))
 
-	// Linearly combine all string similarity sub-scoring functions into one definite function
+	// We linearly combine the Optimal Alignment distance sub-scoring with the Dice Similarity
+	// sub-scoring function into a single definite string similarity scoring function.
 	combinedDistanceScoreFunction := func(fst, snd string) float64 {
-		optimalAlignmentSubScore := 1.0 - customizedOptimalAlignmentDistance(fst, snd)
+		optimalAlignmentSubScore := 1.0 - customOptimalAlignmentDistance(fst, snd)
 		diceCoefficientSubScore := dicecoefficient.DiceSimilarityCoefficient(fst, snd)
 
-		combinedScore := (config.optimalAlignmentWeight*optimalAlignmentSubScore + config.diceSimilarityWeight*diceCoefficientSubScore) / (config.optimalAlignmentWeight + config.diceSimilarityWeight)
+		numerator := config.optimalAlignmentWeight*optimalAlignmentSubScore + config.diceSimilarityWeight*diceCoefficientSubScore
+		denominator := config.optimalAlignmentWeight + config.diceSimilarityWeight
+		combinedScore := numerator / denominator
+
 		return clipNumberToBound(combinedScore, 0.0, 1.0)
 	}
 
-	// Introduce the final string similarity scoring function which first canonicalizes
-	// input strings, generates possible candidates for each input string, then tries all
-	// possible pairs of candidates to see which one yields the maximum combined distance
-	// score in the end.
+	// Finally, we use the combined distance scoring function (constructed above) to compute
+	// the distances between all possible pairs of candidates from both input string.
+	// The final score would be those yielding the maximum combined distance score.
 	bestPairDistanceScoreFunction := func(fst, snd string) float64 {
-		// Clean up strings
-		fst = config.stringCanonicalization(fst)
-		snd = config.stringCanonicalization(snd)
+		fst = config.stringCanonicalizationFunc(fst)
+		snd = config.stringCanonicalizationFunc(snd)
 
-		// Breaking ties to save memory space
+		// Breaking ties to save memory space (see implementation of Levenshtein algorithm)
 		if len(fst) < len(snd) {
 			fst, snd = snd, fst
 		}
 
-		// Try all possible pairs of candidates
+		// Find the highest score based on all pairs of generated candidates
 		bestScore := 0.0
-		for _, candidateOne := range config.candidateGeneration(fst) {
-			for _, candidateTwo := range config.candidateGeneration(snd) {
+		for _, candidateOne := range config.candidateGenerationFunc(fst) {
+			for _, candidateTwo := range config.candidateGenerationFunc(snd) {
 				score := combinedDistanceScoreFunction(candidateOne, candidateTwo)
 				bestScore = math.Max(bestScore, score)
 			}

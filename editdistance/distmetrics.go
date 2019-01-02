@@ -63,6 +63,8 @@ func UnitDist(c, d rune) float64 {
 ThaiSubstitutionErrorDist is a function returning substitution penalties with values
 between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
 between rune characters c and d are more likely, then the penalty will be smaller.
+
+TODO: move this to subpackage for Thai language
 */
 func ThaiSubstitutionErrorDist(c, d rune) float64 {
 	if c == d {
@@ -105,6 +107,8 @@ var substitutionErrorTable = map[RunePair]float64{
 ThaiTranspositionErrorDist is a function returning transposition penalties with values
 between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
 between rune characters c and d are more likely, then the penalty will be smaller.
+
+TODO: move this to subpackage for Thai language
 */
 func ThaiTranspositionErrorDist(c, d rune) float64 {
 	if c == d {
