@@ -37,9 +37,7 @@ func NewSimilarityScoreFunction(setters ...OptionSetter) (func(string, string) f
 
 	// For each addition option setters, apply them to the configuration structure
 	for _, setter := range setters {
-		if err := setter(config); err != nil {
-			return nil, err // short-circuit if there is an error
-		}
+		setter(config)
 	}
 
 	// Based on the configured substitution and transposition penalty functions, we build

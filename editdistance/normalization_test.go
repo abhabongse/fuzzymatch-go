@@ -44,9 +44,9 @@ func TestNormalizedThaiOptimalAlignmentDistance(t *testing.T) {
 		{"English: empty", args{"", "hi"}, 1},
 		{"English: transpose thursday", args{"thrust", "thursday"}, 0.5},
 		{"Thai: unit substitution #1", args{"กขคงจฉมยร", "คงจฉชมยรลว"}, 0.5},
-		{"Thai: unit substitution #2", args{"สองสามสี่", "ลองถามพี่"}, 3.0/8.6},
-		{"Thai: non-unit substitution #1", args{"สองสามสี่", "ลองถามสิ"}, 3.6/8.6},
-		{"Thai: non-unit substitution #2", args{"ไฟอากาศนำ้ค่ะ", "ใฝอากาสน้ำค้ะ"}, 3.6/12.2},
+		{"Thai: unit substitution #2", args{"สองสามสี่", "ลองถามพี่"}, 3.0 / 8.6},
+		{"Thai: non-unit substitution #1", args{"สองสามสี่", "ลองถามสิ"}, 3.6 / 8.6},
+		{"Thai: non-unit substitution #2", args{"ไฟอากาศนำ้ค่ะ", "ใฝอากาสน้ำค้ะ"}, 3.6 / 12.2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
