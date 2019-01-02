@@ -1,6 +1,9 @@
 package candidacy
 
-import "regexp"
+import (
+	"regexp"
+	"sort"
+)
 
 /*
 Decomposition is a type struct for the split between the salutation and
@@ -10,7 +13,8 @@ type Decomposite = struct{ salute, bare string }
 
 /*
 GenerateSalutationDecomposites generates a sequence of all possible splits
-(i.e. decomposites) of salutation from a given name input.
+(i.e. decomposites) of salutation from a given name input. Output sequences
+are sorted according to the extracted salutations first.
 
 For this function, only basic English and Thai salutations are concerned:
 mr, mrs, ms, mister, miss, master, นาย, นาง, นางสาว, เด็กชาย, เด็กหญิง.
@@ -19,7 +23,6 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 	candidates := make([]Decomposite, 0)
 	candidates = append(candidates, Decomposite{"", name})
 
-	// TODO: Generate decomposites of salutation titles
 	for _, regex := range SalutationTitleRegExps {
 		result := regex.FindStringSubmatch(name)
 		if len(result) > 0 {
@@ -27,6 +30,10 @@ func GenerateSalutationDecomposites(name string) []Decomposite {
 		}
 	}
 
+	// Sort sequences by salutations first, then by bare name
+	sort.Slice(candidates, func(i, j int) bool {
+		return candidates[i].salute < candidates[j].salute || candidates[i].salute == candidates[j].salute && candidates[i].bare < candidates[j].bare
+	})
 	return candidates
 }
 

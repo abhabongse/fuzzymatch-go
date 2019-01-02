@@ -14,7 +14,9 @@ func TestGenerateSalutationDecomposites(t *testing.T) {
 		args args
 		want []Decomposite
 	}{
-		{"empty", args{""}, []Decomposite{{"", ""}}},
+		{"empty", args{""}, []Decomposite{
+			{"", ""},
+		}},
 		{"unchanged", args{"สวัสดี"}, []Decomposite{
 			{"", "สวัสดี"},
 		}},
@@ -22,11 +24,51 @@ func TestGenerateSalutationDecomposites(t *testing.T) {
 			{"", "นายกรัฐมนตรี"},
 			{"นาย", "กรัฐมนตรี"},
 		}},
-		// TODO: add more comprehensive tests
+		{"Thai ms/mrs #1", args{"นางสาวสยาม"}, []Decomposite{
+			{"", "นางสาวสยาม"},
+			{"นาง", "สาวสยาม"},
+			{"นางสาว", "สยาม"},
+		}},
+		{"Thai ms/mrs #2", args{"นางสาว สยาม"}, []Decomposite{
+			{"", "นางสาว สยาม"},
+			{"นาง", "สาว สยาม"},
+			{"นางสาว", "สยาม"},
+		}},
+		{"Thai ms/mrs #3", args{"นาง สาวสยาม"}, []Decomposite{
+			{"", "นาง สาวสยาม"},
+			{"นาง", "สาวสยาม"},
+		}},
+		{"Thai mstr #1", args{"ดช ด่วน ทันใจ"}, []Decomposite{
+			{"", "ดช ด่วน ทันใจ"},
+			{"ดช", "ด่วน ทันใจ"},
+		}},
+		{"Thai mstr #2", args{"ด.ช. ด่วน ทันใจ"}, []Decomposite{
+			{"", "ด.ช. ด่วน ทันใจ"},
+			{"ด.ช.", "ด่วน ทันใจ"},
+		}},
+		{"Thai mstr #3", args{"ด.ช.ด่วน ทันใจ"}, []Decomposite{
+			{"", "ด.ช.ด่วน ทันใจ"},
+			{"ด.ช.", "ด่วน ทันใจ"},
+		}},
+		{"English mr #1", args{"mr lightning speed"}, []Decomposite{
+			{"", "mr lightning speed"},
+			{"mr", "lightning speed"},
+		}},
+		{"English mr #2", args{"mr.lightning speed"}, []Decomposite{
+			{"", "mr.lightning speed"},
+			{"mr", "lightning speed"},
+		}},
+		{"English mr #3", args{"mr. lightning speed"}, []Decomposite{
+			{"", "mr. lightning speed"},
+			{"mr", "lightning speed"},
+		}},
+		{"English mister", args{"mister lightning speed"}, []Decomposite{
+			{"", "mister lightning speed"},
+			{"mister", "lightning speed"},
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// TODO: sort slices before comparison
 			if got := GenerateSalutationDecomposites(tt.args.name); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GenerateSalutationDecomposites() = %v, want %v", got, tt.want)
 			}
