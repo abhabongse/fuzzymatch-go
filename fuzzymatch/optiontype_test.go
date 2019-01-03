@@ -18,7 +18,6 @@ func TestPanicLinearCombinedScore(t *testing.T) {
 		{"positive", args{2.0, 3.0}, false},
 		{"all zeros", args{0.0, 0.0}, true},
 		{"negative", args{3.0, -2.0}, true},
-		// TODO: Add test cases.
 	}
 
 	checkPanic := func(args args, shouldPanic bool) {

@@ -20,8 +20,6 @@ scores from two input strings based on the provided option setters.
 This function follow Go's pattern of functional Options. Since this function is
 computationally intensive, one possible optimization is to create a string similarity
 score once by putting them at the global level.
-
-TODO: add usage examples
 */
 func NewSimilarityScoreFunction(setters ...OptionSetter) func(string, string) float64 {
 

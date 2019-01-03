@@ -31,7 +31,6 @@ customized especially for Thai scripts. Some of the edit operations (insertions,
 substitutions, and adjacent character transpositions) may incur penalties smaller than 1.
 
 TODO: Question: Do we still need this?
-TODO: write unit tests
 */
 var ThaiOptimalAlignmentDistance = MakeAlignmentDistanceFunction(
 	ThaiSubstitutionErrorDist, ThaiTranspositionErrorDist,
