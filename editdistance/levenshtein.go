@@ -161,6 +161,7 @@ func OptimalAlignmentDistance(
 					table[i][pj]+substitutionDistFunc(0, d),
 				),
 			)
+			// TODO: enable the disabling of transpositions
 			// Now consider the transposition penalty if the last two runes
 			// of both strings are indeed transposition.
 			if pc == d && pd == c {

@@ -16,7 +16,7 @@ DecomposeName attempts to parse the given name string using various decompositio
 patterns. The output of this function is a slice of Decomposite structures in
 the sorted order of the attributes Salute and Bare, respectively.
 */
-func DecomposeName(name string, patterns []*regexp.Regexp) []Decomposite {
+func DecomposeName(patterns []*regexp.Regexp, name string) []Decomposite {
 	// One possible candidate is the empty salutation (always assumed)
 	decomposites := []Decomposite{{"", name}}
 
@@ -38,12 +38,12 @@ func DecomposeName(name string, patterns []*regexp.Regexp) []Decomposite {
 }
 
 /*
-PossibleBareNames is a preset function which generates a sequence of all possible
+ExtractBareNames is a preset function which generates a sequence of all possible
 bare names (or names without salutation titles). It is built upon the function
 DecomposeName with the patterns from DefaultSalutationPatterns.
 */
-func PossibleBareNames(name string) []string {
-	salutationDecomposites := DecomposeName(name, DefaultSalutationPatterns)
+func ExtractBareNames(name string) []string {
+	salutationDecomposites := DecomposeName(DefaultSalutationPatterns, name)
 	bareNames := make([]string, 0, len(salutationDecomposites))
 	for _, decomposite := range salutationDecomposites {
 		bareNames = append(bareNames, decomposite.Bare)
@@ -54,6 +54,8 @@ func PossibleBareNames(name string) []string {
 /*
 DefaultSalutationPatterns is a sequence of all compiled regular expression
 objects which separates salutation titles from the actual full name part.
+
+As of current, only common English and Thai salutation titles are handled.
 */
 var DefaultSalutationPatterns = []*regexp.Regexp{
 	// English full salutation titles: space separator required

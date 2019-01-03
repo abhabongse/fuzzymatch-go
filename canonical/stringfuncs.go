@@ -18,10 +18,10 @@ func ReSpace(str string) string {
 RecombineThaiGrams searches for Thai characters written as a non-canonical bigrams
 and turn them into its appropriate canonical form. There are 2 patterns:
 (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
+
+TODO: implement this function in terms of a string transformer
 */
 func RecombineThaiGrams(str string) string {
-	// TODO (backlog): implement this function in terms of a string transformer
-
 	for _, pattern := range thaiRecombinationTable {
 		str = strings.Replace(str, pattern.oldString, pattern.newString, -1)
 	}

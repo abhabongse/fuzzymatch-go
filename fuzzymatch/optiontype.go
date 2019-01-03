@@ -2,90 +2,96 @@ package fuzzymatch
 
 import (
 	"fmt"
+	"github.com/abhabongse/fuzzymatch-go/editdistance"
 	"math"
 )
 
 /*
-options struct stores the configuration information regarding how two input string
-would be used to compute their similarity score: in particular, how strings are
-canonicalized, how candidates are generated, what rune distance metrics are used,
-and what linear combination weights are used to combine the Optimal Alignment
-sub-score and the Dice Similarity sub-score.
+Options is a type struct that stores the configuration information regarding
+how to compute string similarity score between two input strings, particularly
+(1) how strings are canonicalized,
+(2) how variants/candidates are generates,
+(3) how edit distances between both strings are computed, and
+(4) how edit distance sub-score and the Dice coefficient sub-score will be
+combined to compute the final score, etc.
 */
-type options struct {
-	// String canonicalization function which is applied to each input string
+type Options struct {
+	// String canonicalization function to be applied to each input string
 	stringCanonicalizationFunc func(string) string
-	// Candidate generation function which is applied to each input string
+	// Candidate generation function to be applied to each input string
 	candidateGenerationFunc func(string) []string
-	// Substitution/Transposition distance penalty functions which is used during
-	// the computation of the Optimal Alignment by the Levenshtein's algorithm
-	substitutionPenaltyFunc  func(rune, rune) float64
-	transpositionPenaltyFunc func(rune, rune) float64
-	// Linear combination weights to be assigned to each similarity sub-score:
-	// the Optimal Alignment sub-score and the Dice Similarity sub-score
-	optimalAlignmentWeight float64
-	diceSimilarityWeight   float64
+	// Edit distance function to be applied to both strings
+	editDistanceFunc func(string, string) float64
+	// Combined score function to be applied to edit distance sub-score and
+	// the Dice coefficient sub-score
+	combinedScoreFunc func(float64, float64) float64
 }
 
 /*
-OptionSetter type maintains the configuration information regarding how
-two strings are compared in order to compute the overall similarity score.
+OptionSetter is a type alias for functions that modify given Options type struct.
+Functions of this type can be used to configure how to compute the overall
+string similarity scores between any two input strings.
 */
-type OptionSetter func(*options)
+type OptionSetter func(*Options)
 
 /*
-StringCanonicalization specifies the function to canonicalize (i.e. clean up)
-each input string before they are compared. The function must receive a string
-and output the string already cleaned up.
+StringCanonicalization assigns the function that would be used to clean up each
+of the input strings before they are subsequently compared. In specific, this
+wrappedFunc will receive a string as the only input argument and it should return
+the canonicalized string of the input.
 */
-func StringCanonicalization(stringCanonicalizationFunc func(string) string) OptionSetter {
-	return func(config *options) {
-		config.stringCanonicalizationFunc = stringCanonicalizationFunc
+func StringCanonicalization(wrappedFunc func(string) string) OptionSetter {
+	return func(config *Options) {
+		config.stringCanonicalizationFunc = wrappedFunc
 	}
 }
 
 /*
-CandidateGeneration specifies the function to generate all candidates based on
-the already-canonicalized input string. The function must receive a string and
-output a slice of strings each indicating an individual candidate.
+CandidateGeneration assigns the function that would be used to generate all
+normalization variants of the already-canonicalized input string. In specific,
+this function will receive a string as the only input argument and it should return
+a slice of strings each indicating a possible variant of the input string.
 */
-func CandidateGeneration(candidateGenerationFunc func(string) []string) OptionSetter {
-	return func(config *options) {
-		config.candidateGenerationFunc = candidateGenerationFunc
+func CandidateGeneration(wrappedFunc func(string) []string) OptionSetter {
+	return func(config *Options) {
+		config.candidateGenerationFunc = wrappedFunc
 	}
 }
 
 /*
-RuneDistancePenalties specifies the substitution/transposition rune distance metric
-penalty functions which would be used in the computation of Optimal Alignment distance
-between two strings.
+OptimalAlignmentEditDistance constructs a customized version of the normalized
+Optimal Alignment scoring function from the provided substitution/transposition
+penalty rune distance metrics. This resulting function is then assigned to compute
+the edit distance between two input strings.
 */
-func RuneDistancePenalties(substitutionPenalty, transpositionPenalty func(rune, rune) float64) OptionSetter {
-	return func(config *options) {
-		config.substitutionPenaltyFunc = substitutionPenalty
-		config.transpositionPenaltyFunc = transpositionPenalty
+func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty editdistance.RuneDistanceMetric) OptionSetter {
+	return func(config *Options) {
+		alignmentDistanceFunc := editdistance.MakeAlignmentDistanceFunction(substitutionPenalty, transpositionPenalty)
+		config.editDistanceFunc = editdistance.MakeNormalized(alignmentDistanceFunc)
 	}
 }
 
 /*
-CombinationWeights specifies the linear combination weights for the Optimal Alignment
-distance sub-score and the Dice Similarity coefficients sub-score, respectively.
-
-TODO: panic instead of returning errors
-TODO: tests for errors
+LinearCombinedScore constructs a linear combination function which combines the
+edit distance sub-score with the Dice coefficient sub-score with the pre-specified
+weights. The resulting function is then assigned to compute the combined score.
 */
-func CombinationWeights(optimalAlignmentWeight, diceSimilarityWeight float64) OptionSetter {
-	return func(config *options) {
-		if math.IsNaN(optimalAlignmentWeight) || optimalAlignmentWeight < 0.0 {
-			panic(fmt.Sprintf("optimalAlignmentWeight should be non-negative: given %v", optimalAlignmentWeight))
+func LinearCombinedScore(editDistanceWeight, diceCoefficientWeight float64) OptionSetter {
+	return func(config *Options) {
+		if math.IsNaN(editDistanceWeight) || editDistanceWeight < 0.0 {
+			panic(fmt.Sprintf("editDistanceWeight should be non-negative: given %v", editDistanceWeight))
 		}
-		if math.IsNaN(diceSimilarityWeight) || diceSimilarityWeight < 0.0 {
-			panic(fmt.Sprintf("diceSimilarityWeight should be non-negative: given %v", diceSimilarityWeight))
+		if math.IsNaN(diceCoefficientWeight) || diceCoefficientWeight < 0.0 {
+			panic(fmt.Sprintf("diceCoefficientWeight should be non-negative: given %v", diceCoefficientWeight))
 		}
-		if optimalAlignmentWeight+diceSimilarityWeight <= 0.0 {
-			panic(fmt.Sprintf("optimalAlignmentWeight + diceSimilarityWeight should be positive: given 0s"))
+		if editDistanceWeight+diceCoefficientWeight <= 0.0 {
+			panic(fmt.Sprintf("editDistanceWeight + diceCoefficientWeight should be positive: given 0s"))
 		}
-		config.optimalAlignmentWeight = optimalAlignmentWeight
-		config.diceSimilarityWeight = diceSimilarityWeight
+
+		config.combinedScoreFunc = func(editDistanceSubScore, diceCoefficientSubScore float64) float64 {
+			numerator := editDistanceWeight*editDistanceSubScore + diceCoefficientWeight*diceCoefficientSubScore
+			denominator := editDistanceWeight + diceCoefficientWeight
+			return numerator / denominator
+		}
 	}
 }

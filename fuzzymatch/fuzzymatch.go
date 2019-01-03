@@ -17,7 +17,7 @@ import (
 NewSimilarityScoreFunction constructs a new function to compute the string similarity
 scores from two input strings based on the provided option setters.
 
-This function follow Go's pattern of functional options. Since this function is
+This function follow Go's pattern of functional Options. Since this function is
 computationally intensive, one possible optimization is to create a string similarity
 score once by putting them at the global level.
 
@@ -26,13 +26,11 @@ TODO: add usage examples
 func NewSimilarityScoreFunction(setters ...OptionSetter) func(string, string) float64 {
 
 	// Let us start from the default configuration
-	config := &options{
+	config := &Options{
 		stringCanonicalizationFunc: DefaultCanonicalizeString,
 		candidateGenerationFunc:    DefaultGenerateCandidates,
-		substitutionPenaltyFunc:    editdistance.UnitDist,
-		transpositionPenaltyFunc:   editdistance.UnitDist,
-		optimalAlignmentWeight:     1.0,
-		diceSimilarityWeight:       0.0,
+		editDistanceFunc:           editdistance.NormalizedSimpleAlignmentDistance,
+		combinedScoreFunc:          DefaultCombineScore,
 	}
 
 	// For each addition option setters, apply them to the configuration structure
@@ -40,22 +38,13 @@ func NewSimilarityScoreFunction(setters ...OptionSetter) func(string, string) fl
 		setter(config)
 	}
 
-	// Based on the configured substitution and transposition penalty functions, we build
-	// a customized version of the normalized Optimal Alignment score.
-	customOptimalAlignmentDistance := editdistance.MakeNormalized(editdistance.MakeAlignmentDistanceFunction(
-		config.substitutionPenaltyFunc, config.transpositionPenaltyFunc,
-	))
-
 	// We linearly combine the Optimal Alignment distance sub-scoring with the Dice Similarity
 	// sub-scoring function into a single definite string similarity scoring function.
 	combinedDistanceScoreFunction := func(fst, snd string) float64 {
-		optimalAlignmentSubScore := 1.0 - customOptimalAlignmentDistance(fst, snd)
+		editDistanceSubScore := 1.0 - config.editDistanceFunc(fst, snd)
 		diceCoefficientSubScore := dicecoefficient.DiceSimilarityCoefficient(fst, snd)
 
-		numerator := config.optimalAlignmentWeight*optimalAlignmentSubScore + config.diceSimilarityWeight*diceCoefficientSubScore
-		denominator := config.optimalAlignmentWeight + config.diceSimilarityWeight
-		combinedScore := numerator / denominator
-
+		combinedScore := config.combinedScoreFunc(editDistanceSubScore, diceCoefficientSubScore)
 		return clipNumberToBound(combinedScore, 0.0, 1.0)
 	}
 
@@ -125,6 +114,14 @@ DefaultGenerateCandidates uses the input string itself as the only candidate.
 func DefaultGenerateCandidates(str string) []string {
 	candidates := []string{str}
 	return candidates
+}
+
+/*
+DefaultCombineScore utilizes only the edit distance sub-score and completely
+ignore the Dice coefficient sub-score.
+*/
+func DefaultCombineScore(editDistanceSubScore, diceCoefficientSubScore float64) float64 {
+	return 1.0*editDistanceSubScore + 0.0*diceCoefficientSubScore
 }
 
 /*

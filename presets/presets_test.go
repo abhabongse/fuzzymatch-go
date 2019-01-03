@@ -1,7 +1,6 @@
 package presets
 
 import (
-	"fmt"
 	"math"
 	"testing"
 )
@@ -56,10 +55,4 @@ func TestThaiNameSimilarityScore(t *testing.T) {
 			}
 		})
 	}
-}
-
-func ExampleSimilarityScore() {
-	// Find the similarity score between "saturday" and "sunday"
-	score := PlainSimilarityScore("saturday", "sunday")
-	fmt.Println(score)
 }

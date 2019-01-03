@@ -23,7 +23,7 @@ score and (2) the Sørensen–Dice coefficient; both scores are combined at the 
 respectively.
 */
 var PlainSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.CombinationWeights(1.0, 2.0),
+	fuzzymatch.LinearCombinedScore(1.0, 2.0),
 )
 
 /*
@@ -34,7 +34,7 @@ appearance of salutation titles; and (2) this function is powered by non-unit ru
 distance metrics for edit operations — some leniency is given to more common errors.
 */
 var ThaiNameSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.CandidateGeneration(candidacy.PossibleBareNames),
-	fuzzymatch.RuneDistancePenalties(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
-	fuzzymatch.CombinationWeights(2.0, 3.0),
+	fuzzymatch.CandidateGeneration(candidacy.ExtractBareNames),
+	fuzzymatch.OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
+	fuzzymatch.LinearCombinedScore(2.0, 3.0),
 )

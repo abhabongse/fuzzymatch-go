@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestPanicCombinationWeights(t *testing.T) {
+func TestPanicLinearCombinedScore(t *testing.T) {
 	type args struct {
 		optimalAlignmentWeight float64
 		diceSimilarityWeight   float64
@@ -27,7 +27,7 @@ func TestPanicCombinationWeights(t *testing.T) {
 				t.Errorf("CombinationWeights() panic status = %v, expected %v", r != nil, shouldPanic)
 			}
 		}()
-		NewSimilarityScoreFunction(CombinationWeights(args.optimalAlignmentWeight, args.diceSimilarityWeight))
+		NewSimilarityScoreFunction(LinearCombinedScore(args.optimalAlignmentWeight, args.diceSimilarityWeight))
 	}
 
 	for _, tt := range tests {
