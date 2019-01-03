@@ -1,29 +1,10 @@
 package fuzzymatch
 
 import (
-	"fmt"
 	"testing"
-
-	"github.com/abhabongse/fuzzymatch-go/editdistance"
 )
 
-func ExampleSimilarityScore() {
-	var SimilarityScore func(string, string) float64
-	// Construct a basic string similarity score function (these lines are equivalent)
-	SimilarityScore = NewSimilarityScoreFunction()
-	SimilarityScore = NewSimilarityScoreFunction(
-		StringCanonicalization(DefaultCanonicalizeString),
-		CandidateGeneration(DefaultGenerateCandidates),
-		RuneDistancePenalties(editdistance.UnitDist, editdistance.UnitDist),
-		CombinationWeights(1.0, 0.0),
-	)
-
-	// Constructed string similarity score function can be applied to pairs of strings
-	score := SimilarityScore("saturday", "sunday")
-	fmt.Println(score)
-}
-
-func TestCombinationWeights(t *testing.T) {
+func TestPanicCombinationWeights(t *testing.T) {
 	type args struct {
 		optimalAlignmentWeight float64
 		diceSimilarityWeight   float64
@@ -41,7 +22,7 @@ func TestCombinationWeights(t *testing.T) {
 	}
 
 	checkPanic := func(args args, shouldPanic bool) {
-		defer func(){
+		defer func() {
 			if r := recover(); (r != nil) != shouldPanic {
 				t.Errorf("CombinationWeights() panic status = %v, expected %v", r != nil, shouldPanic)
 			}

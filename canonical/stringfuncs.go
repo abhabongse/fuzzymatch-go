@@ -20,7 +20,7 @@ and turn them into its appropriate canonical form. There are 2 patterns:
 (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
 */
 func RecombineThaiGrams(str string) string {
-	// TODO: implement this function in terms of a string transformer
+	// TODO (backlog): implement this function in terms of a string transformer
 
 	for _, pattern := range thaiRecombinationTable {
 		str = strings.Replace(str, pattern.oldString, pattern.newString, -1)

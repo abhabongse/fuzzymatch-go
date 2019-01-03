@@ -187,8 +187,6 @@ var ThaiRunes = map[rune]uint16{
 	ThaiCharacterKhomut:         0x0e5b,
 }
 
-// TODO: the following three range tables should be used for repeated chars removal
-
 // ThaiAscendingVowels is a collection of Thai vowels residing above Thai consonants
 var ThaiAscendingVowels = &unicode.RangeTable{
 	R16: []unicode.Range16{
