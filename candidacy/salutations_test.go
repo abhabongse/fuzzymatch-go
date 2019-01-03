@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGenerateSalutationDecomposites(t *testing.T) {
+func TestDecomposeNameWithDefaultSalutationPatterns(t *testing.T) {
 	type args struct {
 		name string
 	}
@@ -69,8 +69,8 @@ func TestGenerateSalutationDecomposites(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetAllSalutationDecomposites(tt.args.name); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetAllSalutationDecomposites() = %v, want %v", got, tt.want)
+			if got := DecomposeName(tt.args.name, DefaultSalutationPatterns); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecomposeName() = %v, want %v", got, tt.want)
 			}
 		})
 	}

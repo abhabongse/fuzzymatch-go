@@ -6,43 +6,44 @@ import (
 )
 
 /*
-Decomposition is a type struct for the split between the salutation and
-the Bare name sans the salutation.
+Decomposition is a type struct representing the splitting between the salutation
+title (Salute) and the bare name sans the salutation (Bare).
 */
 type Decomposite = struct{ Salute, Bare string }
 
 /*
-GetAllSalutationDecomposites generates a sequence of all possible splits
-(i.e. decomposites) of salutation from a given name input. Output sequences
-are sorted according to the extracted salutations first.
-
-For this function, only basic English and Thai salutations are concerned:
-mr, mrs, ms, mister, miss, master, นาย, นาง, นางสาว, เด็กชาย, เด็กหญิง.
+DecomposeName attempts to parse the given name string using various decomposition
+patterns. The output of this function is a slice of Decomposite structures in
+the sorted order of the attributes Salute and Bare, respectively.
 */
-func GetAllSalutationDecomposites(name string) []Decomposite {
-	candidates := make([]Decomposite, 0)
-	candidates = append(candidates, Decomposite{"", name})
+func DecomposeName(name string, patterns []*regexp.Regexp) []Decomposite {
+	// One possible candidate is the empty salutation (always assumed)
+	decomposites := []Decomposite{{"", name}}
 
-	for _, regex := range SalutationTitleRegExps {
-		result := regex.FindStringSubmatch(name)
+	// Attempt to parse name with each pattern
+	for _, pattern := range patterns {
+		result := pattern.FindStringSubmatch(name)
 		if len(result) > 0 {
-			candidates = append(candidates, Decomposite{result[1], result[2]})
+			decomposites = append(decomposites, Decomposite{result[1], result[2]})
 		}
 	}
 
-	// Sort sequences by salutations first, then by Bare name
-	sort.Slice(candidates, func(i, j int) bool {
-		return candidates[i].Salute < candidates[j].Salute || candidates[i].Salute == candidates[j].Salute && candidates[i].Bare < candidates[j].Bare
-	})
-	return candidates
+	// Sort the output sequence using the composite key (Salute, Bare)
+	sort.Slice(decomposites,
+		func(i, j int) bool {
+			return decomposites[i].Salute < decomposites[j].Salute || decomposites[i].Salute == decomposites[j].Salute && decomposites[i].Bare < decomposites[j].Bare
+		},
+	)
+	return decomposites
 }
 
 /*
-PossibleBareNames generates a sequence of all possible bare names which
-are names with salutation titles removed.
+PossibleBareNames is a preset function which generates a sequence of all possible
+bare names (or names without salutation titles). It is built upon the function
+DecomposeName with the patterns from DefaultSalutationPatterns.
 */
 func PossibleBareNames(name string) []string {
-	salutationDecomposites := GetAllSalutationDecomposites(name)
+	salutationDecomposites := DecomposeName(name, DefaultSalutationPatterns)
 	bareNames := make([]string, 0, len(salutationDecomposites))
 	for _, decomposite := range salutationDecomposites {
 		bareNames = append(bareNames, decomposite.Bare)
@@ -51,10 +52,10 @@ func PossibleBareNames(name string) []string {
 }
 
 /*
-SalutationTitleRegExps is a sequence of all compiled regular expression
+DefaultSalutationPatterns is a sequence of all compiled regular expression
 objects which separates salutation titles from the actual full name part.
 */
-var SalutationTitleRegExps = []*regexp.Regexp{
+var DefaultSalutationPatterns = []*regexp.Regexp{
 	// English full salutation titles: space separator required
 	regexp.MustCompile("^(mister)(?: )(.*)$"),
 	regexp.MustCompile("^(miss)(?: )(.*)$"),
