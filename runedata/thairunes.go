@@ -1,3 +1,7 @@
+/*
+This source file contains definitions about each character in Thai Unicode block.
+*/
+
 package runedata
 
 import (

@@ -1,9 +1,5 @@
-/*
-Package fuzzymatch contains the customizable factory which generates string similarity
-scoring functions based on various configurations such as how strings are canonicalized
-or which rune distance metrics are used to measure distance between strings.
-*/
-package fuzzymatch
+
+package factory
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/canonical"

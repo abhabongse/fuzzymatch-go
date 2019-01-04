@@ -1,4 +1,4 @@
-package fuzzymatch
+package factory
 
 import (
 	"fmt"

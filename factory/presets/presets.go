@@ -1,13 +1,9 @@
-/*
-Package presets is a collection of pre-combined approximate string matching
-algorithms which determines a similarity score between two strings.
-*/
 package presets
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidacy"
 	"github.com/abhabongse/fuzzymatch-go/editdistance"
-	"github.com/abhabongse/fuzzymatch-go/fuzzymatch"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 )
 
 /*
@@ -22,8 +18,8 @@ final similarity score is computed from (1) the simplified Optimal Alignment dis
 score and (2) the Sørensen–Dice coefficient; both scores are combined at the ratio 1:2
 respectively.
 */
-var PlainSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.LinearCombinedScore(1.0, 2.0),
+var PlainSimilarityScore = factory.NewSimilarityScoreFunction(
+	factory.LinearCombinedScore(1.0, 2.0),
 )
 
 /*
@@ -33,8 +29,8 @@ PlainSimilarityScore: (1) this function accounts for possible discrepancy in the
 appearance of salutation titles; and (2) this function is powered by non-unit rune
 distance metrics for edit operations — some leniency is given to more common errors.
 */
-var ThaiNameSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.CandidateGeneration(candidacy.DefaultExtractBareNames),
-	fuzzymatch.OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
-	fuzzymatch.LinearCombinedScore(2.0, 3.0),
+var ThaiNameSimilarityScore = factory.NewSimilarityScoreFunction(
+	factory.CandidateGeneration(candidacy.DefaultExtractBareNames),
+	factory.OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
+	factory.LinearCombinedScore(2.0, 3.0),
 )

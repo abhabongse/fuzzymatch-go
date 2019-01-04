@@ -1,7 +1,4 @@
-/*
-Package dicecoefficient contains an algorithm implementation of the Sørensen–Dice
-Coefficient (sometimes called the Dice Similarity Coefficient; DSC).
-*/
+
 package dicecoefficient
 
 import "sort"
