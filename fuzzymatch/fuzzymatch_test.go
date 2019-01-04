@@ -28,7 +28,7 @@ func ExampleCustomizedSimilarityScore() {
 	// Create a string similarity score function that can handle discrepancies in the existence
 	// of salutation titles and that enforces non-unit distance penalties.
 	SimilarityScore := NewSimilarityScoreFunction(
-		CandidateGeneration(candidacy.ExtractBareNames),
+		CandidateGeneration(candidacy.DefaultExtractBareNames),
 		OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
 	)
 

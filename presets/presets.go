@@ -34,7 +34,7 @@ appearance of salutation titles; and (2) this function is powered by non-unit ru
 distance metrics for edit operations — some leniency is given to more common errors.
 */
 var ThaiNameSimilarityScore = fuzzymatch.NewSimilarityScoreFunction(
-	fuzzymatch.CandidateGeneration(candidacy.ExtractBareNames),
+	fuzzymatch.CandidateGeneration(candidacy.DefaultExtractBareNames),
 	fuzzymatch.OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
 	fuzzymatch.LinearCombinedScore(2.0, 3.0),
 )
