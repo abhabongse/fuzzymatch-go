@@ -31,6 +31,12 @@ func ExampleCustomizedSimilarityScore() {
 	SimilarityScore := NewSimilarityScoreFunction(
 		CandidateGeneration(candidacy.DefaultExtractBareNames),
 		OptimalAlignmentEditDistance(addons.ThaiSubstitutionErrorDist, addons.ThaiTranspositionErrorDist),
+		CustomCombinedScore(func(editDistanceSubScore, diceCoefficientSubScore float64) float64 {
+			// Multiply blend-mode
+			return 0.5 * editDistanceSubScore * diceCoefficientSubScore +
+				0.25 * editDistanceSubScore +
+				0.25 * diceCoefficientSubScore
+		}),
 	)
 
 	// Constructed string similarity score function can be applied to pairs of strings

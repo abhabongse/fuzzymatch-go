@@ -72,6 +72,16 @@ func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty edit
 }
 
 /*
+CustomEditDistance assigns the given function as the function to compute the edit
+distance between two input strings.
+*/
+func CustomEditDistance(customFunc func(string, string) float64) OptionSetter {
+	return func(config *Options) {
+		config.editDistanceFunc = customFunc
+	}
+}
+
+/*
 LinearCombinedScore constructs a linear combination function which combines the
 edit distance sub-score with the Dice coefficient sub-score with the pre-specified
 weights. The resulting function is then assigned to compute the combined score.
@@ -93,5 +103,15 @@ func LinearCombinedScore(editDistanceWeight, diceCoefficientWeight float64) Opti
 			denominator := editDistanceWeight + diceCoefficientWeight
 			return numerator / denominator
 		}
+	}
+}
+
+/*
+CustomCombinedScore assigns the given function as the function to combine the
+edit-distance sub-score with the Dice coefficient sub-score.
+*/
+func CustomCombinedScore(customFunc func(float64, float64) float64) OptionSetter {
+	return func(config *Options) {
+		config.combinedScoreFunc = customFunc
 	}
 }
