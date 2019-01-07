@@ -6,10 +6,10 @@ This repository contains a Go language implementation of approximate string matc
 
 ### Preset functions
 
-Inside the package `github.com/abhabongse/fuzzymatch-go/factory/presets`, there is
-the function `PlainSimilarityScore` which determines the similarity score between two generic
-input strings. Another function, `ThaiNameSimilarityScore` is a customized version for the
-similarity scoring function but it has extra pre-processings and string comparison logic for
+Inside the package [`github.com/abhabongse/fuzzymatch-go/factory/presets`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory/presets),
+there is the function `PlainSimilarityScore` which determines the similarity score between two
+generic input strings. Another function, `ThaiNameSimilarityScore` is a customized version for
+the similarity scoring function but it has extra pre-processings and string comparison logic for
 names of Thai people. 
 
 Both functions have output values between 0 and 1, where 0 means that two
@@ -25,8 +25,9 @@ func ThaiNameSimilarityScore(fst, snd string) float64 { ... }
 ### Customization
 
 The logical flow for string similarity scoring functions may be customized by using the factory
-(inside the package `github.com/abhabongse/fuzzymatch-go/factory`) to construct a new function. 
-The factory accepts various options; see the documentation for more information.
+(inside the package [`github.com/abhabongse/fuzzymatch-go/factory`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory))
+to construct a new function. The factory accepts various options; see the documentation for more
+information.
 
 ### Notes
 
