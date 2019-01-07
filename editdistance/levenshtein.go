@@ -1,6 +1,8 @@
 package editdistance
 
-import "math"
+import (
+	"math"
+)
 
 /*
 MakeAlignmentDistanceFunction is a higher-order function which receives the substitution
@@ -20,21 +22,8 @@ func MakeAlignmentDistanceFunction(
 SimpleAlignmentDistance is a simplified version of the OptimalAlignmentDistance function.
 It assumes that all edit operations (insertions, deletions, substitutions, and adjacent
 character transpositions) will incur unit penalties.
-
-TODO: Question: Do we still need this?
 */
 var SimpleAlignmentDistance = MakeAlignmentDistanceFunction(UnitDist, UnitDist)
-
-/*
-ThaiOptimalAlignmentDistance is another version of the OptimalAlignmentDistance function
-customized especially for Thai scripts. Some of the edit operations (insertions, deletions,
-substitutions, and adjacent character transpositions) may incur penalties smaller than 1.
-
-TODO: Question: Do we still need this?
-*/
-var ThaiOptimalAlignmentDistance = MakeAlignmentDistanceFunction(
-	ThaiSubstitutionErrorDist, ThaiTranspositionErrorDist,
-)
 
 /*
 OptimalAlignmentDistance computes the "optimal alignment distance" between two given

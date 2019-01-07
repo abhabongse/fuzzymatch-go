@@ -2,7 +2,7 @@ package presets
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidacy"
-	"github.com/abhabongse/fuzzymatch-go/editdistance"
+	"github.com/abhabongse/fuzzymatch-go/editdistance/addons"
 	"github.com/abhabongse/fuzzymatch-go/factory"
 )
 
@@ -31,6 +31,6 @@ distance metrics for edit operations — some leniency is given to more common e
 */
 var ThaiNameSimilarityScore = factory.NewSimilarityScoreFunction(
 	factory.CandidateGeneration(candidacy.DefaultExtractBareNames),
-	factory.OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
+	factory.OptimalAlignmentEditDistance(addons.ThaiSubstitutionErrorDist, addons.ThaiTranspositionErrorDist),
 	factory.LinearCombinedScore(2.0, 3.0),
 )

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/abhabongse/fuzzymatch-go/candidacy"
 	"github.com/abhabongse/fuzzymatch-go/editdistance"
+	"github.com/abhabongse/fuzzymatch-go/editdistance/addons"
 )
 
 func ExampleSimilarityScore() {
@@ -29,7 +30,7 @@ func ExampleCustomizedSimilarityScore() {
 	// of salutation titles and that enforces non-unit distance penalties.
 	SimilarityScore := NewSimilarityScoreFunction(
 		CandidateGeneration(candidacy.DefaultExtractBareNames),
-		OptimalAlignmentEditDistance(editdistance.ThaiSubstitutionErrorDist, editdistance.ThaiTranspositionErrorDist),
+		OptimalAlignmentEditDistance(addons.ThaiSubstitutionErrorDist, addons.ThaiTranspositionErrorDist),
 	)
 
 	// Constructed string similarity score function can be applied to pairs of strings

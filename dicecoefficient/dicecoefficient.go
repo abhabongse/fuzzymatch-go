@@ -1,4 +1,3 @@
-
 package dicecoefficient
 
 import "sort"

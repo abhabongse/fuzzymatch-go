@@ -36,11 +36,3 @@ very similar) and 1 (meaning that strings very distinct). The original distance 
 is normalized against the max length of two strings.
 */
 var NormalizedSimpleAlignmentDistance = MakeNormalized(SimpleAlignmentDistance)
-
-/*
-NormalizedThaiOptimalAlignmentDistance is the normalized version of the ThaiOptimalAlignmentDistance
-whose outputs are guaranteed to be between 0 (meaning that strings are very similar) and 1 (meaning
-that strings very distinct). The original distance score is normalized against the sum of the
-insertion/deletion penalties of one of two strings, whichever is larger.
-*/
-var NormalizedThaiOptimalAlignmentDistance = MakeNormalized(ThaiOptimalAlignmentDistance)
