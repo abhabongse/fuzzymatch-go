@@ -2,6 +2,7 @@ package presets
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidacy"
+	"github.com/abhabongse/fuzzymatch-go/canonical"
 	"github.com/abhabongse/fuzzymatch-go/editdistance/addons"
 	"github.com/abhabongse/fuzzymatch-go/factory"
 )
@@ -19,6 +20,7 @@ score and (2) the Sørensen–Dice coefficient; both scores are combined at the 
 respectively.
 */
 var PlainSimilarityScore = factory.NewSimilarityScoreFunction(
+	factory.StringCanonicalization(canonical.CanonicalizeString),
 	factory.LinearCombinedScore(1.0, 2.0),
 )
 
@@ -30,6 +32,7 @@ appearance of salutation titles; and (2) this function is powered by non-unit ru
 distance metrics for edit operations — some leniency is given to more common errors.
 */
 var ThaiNameSimilarityScore = factory.NewSimilarityScoreFunction(
+	factory.StringCanonicalization(canonical.CanonicalizeThaiString),
 	factory.CandidateGeneration(candidacy.DefaultExtractBareNames),
 	factory.OptimalAlignmentEditDistance(addons.ThaiSubstitutionErrorDist, addons.ThaiTranspositionErrorDist),
 	factory.LinearCombinedScore(2.0, 3.0),
