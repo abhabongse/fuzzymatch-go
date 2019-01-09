@@ -32,7 +32,7 @@ OptionSetter is a type alias for functions that modify given Options type struct
 Functions of this type can be used to configure how to compute the overall
 string similarity scores between any two input strings.
 */
-type OptionSetter func(*Options)
+type OptionSetter = func(*Options)
 
 /*
 StringCanonicalization assigns the function that would be used to clean up each
