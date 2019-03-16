@@ -1,4 +1,4 @@
-package presets
+package preset
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidate"

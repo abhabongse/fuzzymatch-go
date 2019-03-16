@@ -1,4 +1,4 @@
-package presets
+package preset
 
 import (
 	"math"
