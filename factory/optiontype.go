@@ -2,29 +2,29 @@ package factory
 
 import (
 	"fmt"
-	"github.com/abhabongse/fuzzymatch-go/editdistance"
+	"github.com/abhabongse/fuzzymatch-go/editdist"
 	"math"
 )
 
 /*
 Options is a type struct that stores the configuration information regarding
 how to compute string similarity score between two input strings, particularly
-(1) how strings are canonicalized,
+(1) how strings are sanitized,
 (2) how variants/candidates are generates,
 (3) how edit distances between both strings are computed, and
 (4) how edit distance sub-score and the Dice coefficient sub-score will be
 combined to compute the final score, etc.
 */
 type Options struct {
-	// String canonicalization function to be applied to each input string
-	stringCanonicalizationFunc func(string) string
+	// String sanitization function to be applied to each input string
+	sanitizeStringFunc func(string) string
 	// Candidate generation function to be applied to each input string
-	candidateGenerationFunc func(string) []string
+	generateCandidatesFunc func(string) []string
 	// Edit distance function to be applied to both strings
 	editDistanceFunc func(string, string) float64
 	// Combined score function to be applied to edit distance sub-score and
 	// the Dice coefficient sub-score
-	combinedScoreFunc func(float64, float64) float64
+	combineScoresFunc func(float64, float64) float64
 }
 
 /*
@@ -35,26 +35,26 @@ string similarity scores between any two input strings.
 type OptionSetter = func(*Options)
 
 /*
-StringCanonicalization assigns the function that would be used to clean up each
+StringSanitization assigns the function that would be used to clean up each
 of the input strings before they are subsequently compared. In specific, this
 wrappedFunc will receive a string as the only input argument and it should return
-the canonicalized string of the input.
+the sanitized string of the input.
 */
-func StringCanonicalization(wrappedFunc func(string) string) OptionSetter {
+func StringSanitization(wrappedFunc func(string) string) OptionSetter {
 	return func(config *Options) {
-		config.stringCanonicalizationFunc = wrappedFunc
+		config.sanitizeStringFunc = wrappedFunc
 	}
 }
 
 /*
-CandidateGeneration assigns the function that would be used to generate all
-normalization variants of the already-canonicalized input string. In specific,
+CandidatesGeneration assigns the function that would be used to generate all
+normalization variants of the already-sanitized input string. In specific,
 this function will receive a string as the only input argument and it should return
 a slice of strings each indicating a possible variant of the input string.
 */
-func CandidateGeneration(wrappedFunc func(string) []string) OptionSetter {
+func CandidatesGeneration(wrappedFunc func(string) []string) OptionSetter {
 	return func(config *Options) {
-		config.candidateGenerationFunc = wrappedFunc
+		config.generateCandidatesFunc = wrappedFunc
 	}
 }
 
@@ -64,10 +64,10 @@ Optimal Alignment scoring function from the provided substitution/transposition
 penalty rune distance metrics. This resulting function is then assigned to compute
 the edit distance between two input strings.
 */
-func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty editdistance.RuneDistanceMetric) OptionSetter {
+func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty editdist.RunePenaltyFunc) OptionSetter {
 	return func(config *Options) {
-		alignmentDistanceFunc := editdistance.MakeAlignmentDistanceFunction(substitutionPenalty, transpositionPenalty)
-		config.editDistanceFunc = editdistance.MakeNormalized(alignmentDistanceFunc)
+		alignmentDistanceFunc := editdist.MakeOptimalAlignmentDistFunc(substitutionPenalty, transpositionPenalty)
+		config.editDistanceFunc = editdist.MakeNormalized(alignmentDistanceFunc)
 	}
 }
 
@@ -98,7 +98,7 @@ func LinearCombinedScore(editDistanceWeight, diceCoefficientWeight float64) Opti
 			panic(fmt.Sprintf("editDistanceWeight + diceCoefficientWeight should be positive: given 0s"))
 		}
 
-		config.combinedScoreFunc = func(editDistanceSubScore, diceCoefficientSubScore float64) float64 {
+		config.combineScoresFunc = func(editDistanceSubScore, diceCoefficientSubScore float64) float64 {
 			numerator := editDistanceWeight*editDistanceSubScore + diceCoefficientWeight*diceCoefficientSubScore
 			denominator := editDistanceWeight + diceCoefficientWeight
 			return numerator / denominator
@@ -112,6 +112,6 @@ edit-distance sub-score with the Dice coefficient sub-score.
 */
 func CustomCombinedScore(customFunc func(float64, float64) float64) OptionSetter {
 	return func(config *Options) {
-		config.combinedScoreFunc = customFunc
+		config.combineScoresFunc = customFunc
 	}
 }

@@ -26,7 +26,7 @@ func TestPanicLinearCombinedScore(t *testing.T) {
 				t.Errorf("CombinationWeights() panic status = %v, expected %v", r != nil, shouldPanic)
 			}
 		}()
-		NewSimilarityScoreFunction(LinearCombinedScore(args.optimalAlignmentWeight, args.diceSimilarityWeight))
+		NewSimilarityScoreFunc(LinearCombinedScore(args.optimalAlignmentWeight, args.diceSimilarityWeight))
 	}
 
 	for _, tt := range tests {
