@@ -92,6 +92,7 @@ var DefaultTitledNamePatterns = []*regexp.Regexp{
 	regexp.MustCompile("^(ดช)(?: )(.*)()$"),
 	regexp.MustCompile("^(ดญ)(?: )(.*)()$"),
 	// Thai dot-abbreviated prefixed titles: separator optional
+	regexp.MustCompile("^(น\\.ส\\.)(?: ?)(.*)()$"),
 	regexp.MustCompile("^(ด\\.ช\\.)(?: ?)(.*)()$"),
 	regexp.MustCompile("^(ด\\.ญ\\.)(?: ?)(.*)()$"),
 }
