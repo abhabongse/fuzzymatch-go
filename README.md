@@ -6,7 +6,7 @@ This repository contains a Go language implementation of approximate string matc
 
 ### Preset functions
 
-Inside the package [`github.com/abhabongse/fuzzymatch-go/factory/presets`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory/presets),
+Inside the package [`github.com/abhabongse/fuzzymatch-go/factory/preset`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory/preset),
 there is the function `PlainSimilarityScore` which determines the similarity score between two
 generic input strings. Another function, `ThaiNameSimilarityScore` is a customized version for
 the similarity scoring function but it has extra pre-processings and string comparison logic for
