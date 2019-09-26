@@ -13,7 +13,7 @@ the similarity scoring function but it has extra pre-processings and string comp
 names of Thai people. 
 
 Both functions have output values between 0 and 1, where 0 means that two
-strings are very distinct whereas 0 means that two strings are very similar. Here are the 
+strings are very distinct whereas 1 means that two strings are very similar. Here are the 
 signatures for both functions.
  
 ```go
