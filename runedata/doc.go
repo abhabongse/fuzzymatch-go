@@ -1,6 +1,4 @@
-/*
-Package runedata provides additional data regarding Unicode characters which
-are not part of the built-in Go packages, especially those involved nuances
-in foreign languages such as Thai.
-*/
+// Package runedata provides additional database regarding Unicode characters
+// which are not part of the built-in Go golang.org/x/text package,
+// especially those involving nuances in foreign scripts such as Thai.
 package runedata

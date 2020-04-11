@@ -1,7 +1,7 @@
 package extra
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/runedata"
+	"github.com/abhabongse/fuzzymatch-go/runedata/thai"
 	"github.com/abhabongse/fuzzymatch-go/sanitary"
 	"strings"
 	"unicode"
@@ -46,13 +46,13 @@ an old substring portion which should be replaced with a new substring.
 var thaiRecombinationTable = []struct{ oldString, newString string }{
 	{
 		// Replacing nikhahit + sara-aa = sara-am
-		string([]rune{runedata.ThaiCharacterNikhahit, runedata.ThaiCharacterSaraAa}),
-		string([]rune{runedata.ThaiCharacterSaraAm}),
+		string([]rune{thai.CharacterNikhahit, thai.CharacterSaraAa}),
+		string([]rune{thai.CharacterSaraAm}),
 	},
 	{
 		// Replacing sara-e + sara-e = sara-ae
-		string([]rune{runedata.ThaiCharacterSaraE, runedata.ThaiCharacterSaraE}),
-		string([]rune{runedata.ThaiCharacterSaraAe}),
+		string([]rune{thai.CharacterSaraE, thai.CharacterSaraE}),
+		string([]rune{thai.CharacterSaraAe}),
 	},
 }
 
@@ -70,7 +70,7 @@ func RemoveThaiRepeatedAccidents(str string) string {
 	prevRune := rune(0)
 
 	for _, c := range inputRunes {
-		if !(c == prevRune && unicode.In(c, runedata.ThaiNonSpacingMarks)) {
+		if !(c == prevRune && unicode.In(c, thai.NonSpacingMarks)) {
 			outputRunes = append(outputRunes, c)
 		}
 		prevRune = c

@@ -3,8 +3,8 @@ package factory
 import (
 	"fmt"
 	"github.com/abhabongse/fuzzymatch-go/candidate"
-	"github.com/abhabongse/fuzzymatch-go/editdist"
-	"github.com/abhabongse/fuzzymatch-go/editdist/extra"
+	"github.com/abhabongse/fuzzymatch-go/legacy_editdist"
+	"github.com/abhabongse/fuzzymatch-go/legacy_editdist/extra"
 	"github.com/abhabongse/fuzzymatch-go/sanitary"
 	extralang2 "github.com/abhabongse/fuzzymatch-go/sanitary/extra"
 )
@@ -18,7 +18,7 @@ func ExampleSimilarityScore() {
 	SimilarityScore = NewSimilarityScoreFunc(
 		StringSanitization(sanitary.Noop),
 		CandidatesGeneration(candidate.GenerateDefault),
-		OptimalAlignmentEditDistance(editdist.UnitPenalty, editdist.UnitPenalty),
+		OptimalAlignmentEditDistance(legacy_editdist.UnitPenalty, legacy_editdist.UnitPenalty),
 		LinearCombinedScore(1.0, 0.0),
 	)
 

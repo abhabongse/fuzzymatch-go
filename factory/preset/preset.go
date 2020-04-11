@@ -2,7 +2,7 @@ package preset
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidate"
-	editdistExtra "github.com/abhabongse/fuzzymatch-go/editdist/extra"
+	editdistExtra "github.com/abhabongse/fuzzymatch-go/legacy_editdist/thai"
 	"github.com/abhabongse/fuzzymatch-go/factory"
 	"github.com/abhabongse/fuzzymatch-go/sanitary"
 	sanitaryExtra "github.com/abhabongse/fuzzymatch-go/sanitary/extra"

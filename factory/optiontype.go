@@ -64,9 +64,9 @@ Optimal Alignment scoring function from the provided substitution/transposition
 penalty rune distance metrics. This resulting function is then assigned to compute
 the edit distance between two input strings.
 */
-func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty editdist.RunePenaltyFunc) OptionSetter {
+func OptimalAlignmentEditDistance(substitutionPenalty, transpositionPenalty editdist.RunePenaltyFunction) OptionSetter {
 	return func(config *Options) {
-		alignmentDistanceFunc := editdist.MakeOptimalAlignmentDistFunc(substitutionPenalty, transpositionPenalty)
+		alignmentDistanceFunc := editdist.MakeOptimalAlignmentDistFunction(substitutionPenalty, transpositionPenalty)
 		config.editDistanceFunc = editdist.MakeNormalized(alignmentDistanceFunc)
 	}
 }
