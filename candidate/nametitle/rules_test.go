@@ -1,4 +1,4 @@
-package candidate
+package nametitle
 
 import (
 	"reflect"
@@ -10,8 +10,8 @@ func TestNamesWithoutTitles(t *testing.T) {
 	type args struct {
 		name string
 	}
-	SortedNamesWithoutTitles := func(name string) [] string {
-		results := NamesWithoutTitles(name)
+	SortedNamesWithoutTitles := func(name string) []string {
+		results := GenerateNamesWithoutTitles(name)
 		sort.Strings(results)
 		return results
 	}
@@ -38,7 +38,7 @@ func TestNamesWithoutTitles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := SortedNamesWithoutTitles(tt.args.name); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NamesWithoutTitles() = %v, want %v", got, tt.want)
+				t.Errorf("GenerateNamesWithoutTitles() = %v, want %v", got, tt.want)
 			}
 		})
 	}

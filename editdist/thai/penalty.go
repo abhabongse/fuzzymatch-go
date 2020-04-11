@@ -4,10 +4,9 @@ import (
 	runedataThai "github.com/abhabongse/fuzzymatch-go/runedata/thai"
 )
 
-/*
-runePair is a struct type for a pair of runes. This type is introduced solely
-so that a pair of runes can be used as keys to a map structure.
-*/
+// runePair is a struct type for a pair of runes.
+// This type is introduced solely so that a pair of runes
+// can be used as keys to a map structure.
 type runePair = struct{ c, d rune }
 
 // thaiSubstPenaltyTable maps a pair of rune characters to their substitution errors.
@@ -40,11 +39,10 @@ var thaiTransPenaltyTable = map[runePair]float64{
 	runePair{runedataThai.CharacterSaraAm, runedataThai.CharacterMaiChattawa}: 0.3,
 }
 
-/*
-SubstPenalty is a function returning substitution penalties with values
-between 0 and 1, specialized for Thai rune characters. If erroneous substitutions
-between rune characters c and d are more likely, then the penalty will be smaller.
-*/
+// SubstPenalty is a function returning substitution penalties with values between 0 and 1,
+// specialized for Thai rune characters.
+// If erroneous substitutions between rune characters c and d are more likely,
+// then the penalty will be smaller.
 func SubstPenalty(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
@@ -55,14 +53,13 @@ func SubstPenalty(c, d rune) float64 {
 	if value, ok := thaiSubstPenaltyTable[runePair{d, c}]; ok {
 		return value
 	}
-	return 1 // Full substitution penalty
+	return 1 // full substitution penalty
 }
 
-/*
-TransPenalty is a function returning transposition penalties with values
-between 0 and 2, specialized for Thai rune characters. If erroneous transpositions
-between rune characters c and d are more likely, then the penalty will be smaller.
-*/
+// TransPenalty is a function returning transposition penalties with values between 0 and 2,
+// specialized for Thai rune characters.
+// If erroneous transpositions between rune characters c and d are more likely,
+// then the penalty will be smaller.
 func TransPenalty(c, d rune) float64 {
 	if c == d {
 		return 0 // Exact match
@@ -73,5 +70,5 @@ func TransPenalty(c, d rune) float64 {
 	if value, ok := thaiTransPenaltyTable[runePair{d, c}]; ok {
 		return value
 	}
-	return 1 // Full transposition penalty
+	return 1 // full transposition penalty
 }

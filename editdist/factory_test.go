@@ -7,10 +7,10 @@ import (
 
 var SimpleLevenshteinDist = MakeLevenshteinDistFunction(UnitPenalty)
 var SimpleOptimalAlignmentDist = MakeOptimalAlignmentDistFunction(UnitPenalty, UnitPenalty)
-var NormalizedSimpleLevenshteinDist = MakeNormalized(SimpleLevenshteinDist)
-var NormalizedSimpleOptimalAlignmentDist = MakeNormalized(SimpleOptimalAlignmentDist)
+var SimpleLevenshteinStringSimilarity = MakeStringSimilarityFunction(SimpleLevenshteinDist)
+var SimpleOptimalAlignmentStringSimilarity = MakeStringSimilarityFunction(SimpleOptimalAlignmentDist)
 
-func TestNormalizedSimpleLevenshteinDist(t *testing.T) {
+func TestSimpleLevenshteinStringSimilarity(t *testing.T) {
 	type args struct {
 		fst string
 		snd string
@@ -20,21 +20,21 @@ func TestNormalizedSimpleLevenshteinDist(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"weekends", args{"saturday", "sunday"}, 0.375},
-		{"greetings", args{"hello", "hola"}, 0.6},
-		{"empty", args{"", "hi"}, 1},
-		{"transpose thursday", args{"thrust", "thursday"}, 0.625},
+		{"weekends", args{"saturday", "sunday"}, 1 - 0.375},
+		{"greetings", args{"hello", "hola"}, 1 - 0.6},
+		{"empty", args{"", "hi"}, 1 - 1},
+		{"transpose thursday", args{"thrust", "thursday"}, 1 - 0.625},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NormalizedSimpleLevenshteinDist(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
+			if got := SimpleLevenshteinStringSimilarity(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("SimpleAlignmentNormDist() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestNormalizedSimpleOptimalAlignmentDist(t *testing.T) {
+func TestSimpleOptimalAlignmentStringSimilarity(t *testing.T) {
 	type args struct {
 		fst string
 		snd string
@@ -44,14 +44,14 @@ func TestNormalizedSimpleOptimalAlignmentDist(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"weekends", args{"saturday", "sunday"}, 0.375},
-		{"greetings", args{"hello", "hola"}, 0.6},
-		{"empty", args{"", "hi"}, 1},
-		{"transpose thursday", args{"thrust", "thursday"}, 0.5},
+		{"weekends", args{"saturday", "sunday"}, 1 - 0.375},
+		{"greetings", args{"hello", "hola"}, 1 - 0.6},
+		{"empty", args{"", "hi"}, 1 - 1},
+		{"transpose thursday", args{"thrust", "thursday"}, 1 - 0.5},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NormalizedSimpleOptimalAlignmentDist(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
+			if got := SimpleOptimalAlignmentStringSimilarity(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("SimpleAlignmentNormDist() = %v, want %v", got, tt.want)
 			}
 		})
