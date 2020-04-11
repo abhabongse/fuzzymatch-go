@@ -1,40 +1,47 @@
 package preset
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/candidate"
-	editdistExtra "github.com/abhabongse/fuzzymatch-go/legacy_editdist/thai"
+	"github.com/abhabongse/fuzzymatch-go/candidate/nametitle"
+	"github.com/abhabongse/fuzzymatch-go/editdist"
+	editdistThai "github.com/abhabongse/fuzzymatch-go/editdist/thai"
 	"github.com/abhabongse/fuzzymatch-go/factory"
 	"github.com/abhabongse/fuzzymatch-go/sanitary"
-	sanitaryExtra "github.com/abhabongse/fuzzymatch-go/sanitary/extra"
+	sanitaryThai "github.com/abhabongse/fuzzymatch-go/sanitary/thai"
 )
 
-/*
-PlainSimilarityScore is a function which computes the basic similarity score between two
-input strings. Both strings are sanitized before they are compared to each other. The
-returned score value is a floating point value between 0 (meaning that two strings are
-very distinct) and 1 (meaning that two strings are very similar).
+// DefaultSimilarityScore computes the similarity score between two input strings.
+// Two input strings will be directly compared under optimal alignment distance metric
+// without any pre-processing, and the resulting distance will be re-normalized to
+// a similarity score between 0 and 1 (inclusive).
+var DefaultSimilarityScore = factory.MakeSimilarityScoreFunction()
 
-Note that the Optimal Alignment distance score utilizes the standard unit rune distance
-metrics for both the substitution and the transposition penalties. Also note that the
-final similarity score is computed from (1) the simplified Optimal Alignment distance
-score and (2) the Sørensen–Dice coefficient; both scores are combined at the ratio 1:2
-respectively.
-*/
-var PlainSimilarityScore = factory.NewSimilarityScoreFunc(
-	factory.StringSanitization(sanitary.LatinExtendedSanitize),
-	factory.LinearCombinedScore(1.0, 2.0),
+// PlainSimilarityScore computes the similarity score between two input strings
+// but each input string will be sanitized before they are compared to each other.
+var PlainSimilarityScore = factory.MakeSimilarityScoreFunction(
+	factory.StringSanitizer(sanitary.LatinExtendedSanitize),
 )
 
-/*
-ThaiNameSimilarityScore is a string similarity score function customized for names
-written in Thai scripts. There are two major differences between this function and
-PlainSimilarityScore: (1) this function accounts for possible discrepancy in the
-appearance of salutation titles; and (2) this function is powered by non-unit rune
-distance metrics for edit operations — some leniency is given to more common errors.
-*/
-var ThaiNameSimilarityScore = factory.NewSimilarityScoreFunc(
-	factory.StringSanitization(sanitaryExtra.ThaiSanitize),
-	factory.CandidatesGeneration(candidate.NamesWithoutTitles),
-	factory.OptimalAlignmentEditDistance(editdistExtra.ThaiSubstPenalty, editdistExtra.ThaiTransPenalty),
-	factory.LinearCombinedScore(2.0, 3.0),
+// ThaiOptimalAlignmentDist computes the edit distance between two strings
+// under optimal alignment distance metric with penalty function
+// customized especially for Thai character sets.
+var ThaiOptimalAlignmentDist = editdist.MakeOptimalAlignmentDistFunction(
+	editdistThai.SubstPenalty, editdistThai.TransPenalty,
+)
+
+// ThaiStringSimilarity computes the normalized string similarity
+// based on ThaiOptimalAlignmentDist function.
+var ThaiStringSimilarity = editdist.MakeStringSimilarityFunction(ThaiOptimalAlignmentDist)
+
+// ThaiNameSimilarityScore computes the similarity score between two input strings
+// with extra functionalities:
+// (1) Each input string will be sanitized
+//     (removing accent symbols from latin characters, removing repeated Thai tonal marks, etc.)
+// (2) English and Thai titles are attempted removal (Mr., Miss, etc.)
+//     to generate extra candidates.
+// (3) ThaiStringSimilarity is used to compute similarity scores between each pair of candidates.
+//     Some leniency is given to more common errors.
+var ThaiNameSimilarityScore = factory.MakeSimilarityScoreFunction(
+	factory.StringSanitizer(sanitaryThai.Sanitize),
+	factory.CandidatesGenerator(nametitle.GenerateNamesWithoutTitles),
+	factory.SimilarityComputer(ThaiStringSimilarity),
 )

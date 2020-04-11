@@ -8,11 +8,10 @@ import (
 	"unicode"
 )
 
-/*
-ApplyTransformers applies each string transformer in the given sequence of
-transformers to the given input string. If any transformer produces an error,
-it will be silently ignored and intermediate string will not be affected.
-*/
+// ApplyTransformers applies each string transformer
+// from the given sequence of transformers to the given input string.
+// If any transformer produces an error,
+// it will be silently ignored and intermediate string will not be affected.
 func ApplyTransformers(str string, ts ...transform.Transformer) string {
 	for _, t := range ts {
 		modifiedStr, _, err := transform.String(t, str)
@@ -23,39 +22,42 @@ func ApplyTransformers(str string, ts ...transform.Transformer) string {
 	return str
 }
 
-/*
-StripNonPrintingTransform is a Unicode stream transformer object which removes
-all occurrences of non-printing and non-spacing rune characters from a string.
-*/
+// StripNonPrintingTransform is a Unicode stream transformer object
+// which removes all occurrences of non-printing and non-spacing rune characters
+//from a string.
 var StripNonPrintTransformer = runes.Remove(runes.NotIn(runedata.PrintsAndWhiteSpaces))
 
-/*
-ToNormalSpaceTransformer is a Unicode stream transformer object which replaces
-all white space rune characters into a normal space.
-*/
+// ToNormalSpaceTransformer is a Unicode stream transformer object
+// which replaces all white space rune characters into a normal space.
 var ToNormalSpaceTransformer = runes.If(
 	runes.In(unicode.White_Space),
 	runes.Map(func(r rune) rune { return ' ' }),
 	nil,
 )
 
-/*
-RemoveAccentsTransformer is a Unicode stream transformer object which tries to
-removes as many combining diacritical marks from the input string as possible.
-It handles various combinations of the same Unicode characters whenever possible
-(such as 'ö' as a single codepoint vs. 'o' + '¨' = 'ö' which has 2 codepoints).
-
-The removal process is preceded by Unicode decomposition, and the result is
-then re-combined to get final output.
-*/
-var RemoveAccentsTransformer = transform.Chain(
+// StripAccentTransformer is a Unicode stream transformer object
+// which tries to remove as many combining diacritical marks
+// from the input string as possible.
+// It handles various combinations of the same Unicode characters whenever possible
+// (such as 'ö' as a single codepoint vs. 'o' + '¨' = 'ö' which has 2 codepoints).
+//
+// The removal process is preceded by Unicode decomposition,
+// and the result is then re-combined to get final output.
+var StripAccentTransformer = transform.Chain(
 	norm.NFKD,
+	// TODO: maybe keep only Lu, Ll, Lt, Lm, Lo character classes
 	runes.Remove(runes.In(runedata.CombiningDiacriticalMarks)),
 	norm.NFKC,
 )
 
-/*
-ToLowerTransformer is a Unicode stream transformer object which transforms all
-unicode characters into its lowercase forms as defined by Unicode property.
-*/
+// ToLowerTransformer is a Unicode stream transformer object
+// which transforms all  unicode characters into its lowercase forms
+// as defined by Unicode property.
 var ToLowerTransformer = runes.Map(unicode.ToLower)
+
+//// ToUpperTransformer is a Unicode stream transformer object
+//// which transforms all  unicode characters into its lowercase forms
+//// as defined by Unicode property.
+//var ToUpperTransformer = runes.Map(unicode.ToUpper)
+
+// TODO: Use golang.org/x/text/cases instead??

@@ -58,7 +58,7 @@ func TestToNormalSpaceTransformer(t *testing.T) {
 }
 
 func TestRemoveAccentsTransformer(t *testing.T) {
-	RemoveAccents := func(str string) string { return ApplyTransformers(str, RemoveAccentsTransformer) }
+	RemoveAccents := func(str string) string { return ApplyTransformers(str, StripAccentTransformer) }
 	type args struct {
 		str string
 	}
@@ -96,6 +96,7 @@ func TestToLowerTransformer(t *testing.T) {
 		{"basic latin", args{"AbCde FGH  ijkl 123"}, "abcde fgh  ijkl 123"},
 		{"combined chars", args{"cafÉ kÖnig"}, "café könig"},
 		{"decomposed chars", args{"cafÉ kÖnig"}, "café könig"},
+		//{"decomposed chars", args{"heißen"}, "heissen"},
 		{"thai", args{"การทำงาน"}, "การทำงาน"},
 		{"greek & cyrillic", args{"ΣΩ ЂЩ"}, "σω ђщ"},
 	}

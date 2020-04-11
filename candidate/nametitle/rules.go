@@ -1,23 +1,19 @@
-package candidate
+package nametitle
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/candidate"
 	"regexp"
 )
 
-/*
-NamesWithoutTitles is a preset function which generates a sequence of all possible
-bare names (or names without prefixed or suffixed titles). It is built upon the function
-DecomposeName with the patterns from DefaultTitledNamePatterns.
-*/
-var NamesWithoutTitles = MakeCandidateExtractor(DefaultTitledNamePatterns)
+// GenerateNamesWithoutTitles is a preset function which generates a sequence of
+// all possible bare names (or names without prefixed or suffixed titles).
+// It is built upon the function DecomposeName with the patterns from DefaultNameTitlePatterns.
+var GenerateNamesWithoutTitles = candidate.MakeRegexpGenerator(DefaultNameTitlePatterns)
 
-/*
-DefaultTitledNamePatterns is a sequence of all compiled regular expression objects which
-separates bare names from their prefixed and suffixed titles in a full name string.
-
-As of current, only common English and Thai prefixed titles are handled.
-*/
-var DefaultTitledNamePatterns = []*regexp.Regexp{
+// DefaultNameTitlePatterns is a sequence of all compiled regular expression objects
+// which separates bare names from their prefixed and suffixed titles in a full name string.
+// As of current, only common English and Thai prefixed titles are handled.
+var DefaultNameTitlePatterns = []*regexp.Regexp{
 	regexp.MustCompile("^(.*)$"),
 	// English full prefixed titles: space separator required
 	regexp.MustCompile("^(?:mister )(.*)$"),
