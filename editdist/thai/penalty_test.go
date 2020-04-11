@@ -1,12 +1,16 @@
-package extra
+package thai
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/runedata"
+	"github.com/abhabongse/fuzzymatch-go/editdist"
+	runedataThai "github.com/abhabongse/fuzzymatch-go/runedata/thai"
 	"math"
 	"testing"
 )
 
-func TestThaiSubstitutionErrorDist(t *testing.T) {
+var ThaiOptimalAlignmentDist = editdist.MakeOptimalAlignmentDistFunction(SubstPenalty, TransPenalty)
+var NormalizedThaiOptimalAlignmentDist = editdist.MakeNormalized(ThaiOptimalAlignmentDist)
+
+func TestThaiSubstPenalty(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -21,21 +25,21 @@ func TestThaiSubstitutionErrorDist(t *testing.T) {
 		{"totally different #2", args{'ก', 'ข'}, 1},
 		{"similar consonant #1", args{'ศ', 'ษ'}, 0.9},
 		{"similar consonant #2", args{'ษ', 'ศ'}, 0.9},
-		{"missing tonal #1", args{0, runedata.ThaiCharacterMaiEk}, 0.6},
-		{"missing tonal #2", args{runedata.ThaiCharacterMaiEk, 0}, 0.6},
-		{"missing tonal #1", args{runedata.ThaiCharacterMaiTho, runedata.ThaiCharacterMaiEk}, 0.6},
-		{"missing tonal #2", args{runedata.ThaiCharacterMaiEk, runedata.ThaiCharacterMaiTho}, 0.6},
+		{"missing tonal #1", args{0, runedataThai.CharacterMaiEk}, 0.6},
+		{"missing tonal #2", args{runedataThai.CharacterMaiEk, 0}, 0.6},
+		{"missing tonal #1", args{runedataThai.CharacterMaiTho, runedataThai.CharacterMaiEk}, 0.6},
+		{"missing tonal #2", args{runedataThai.CharacterMaiEk, runedataThai.CharacterMaiTho}, 0.6},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ThaiSubstPenalty(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("ThaiSubstPenalty() = %v, want %v", got, tt.want)
+			if got := SubstPenalty(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("SubstPenalty() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestThaiTranspositionErrorDist(t *testing.T) {
+func TestThaiTransPenalty(t *testing.T) {
 	type args struct {
 		c rune
 		d rune
@@ -48,19 +52,19 @@ func TestThaiTranspositionErrorDist(t *testing.T) {
 		{"identical", args{'ก', 'ก'}, 0},
 		{"totally different #1", args{'ก', 'ข'}, 1},
 		{"totally different #2", args{'ก', 'ข'}, 1},
-		{"sara am with tonal #1", args{runedata.ThaiCharacterMaiTri, runedata.ThaiCharacterSaraAm}, 0.3},
-		{"sara am with tonal #2", args{runedata.ThaiCharacterSaraAm, runedata.ThaiCharacterMaiTri}, 0.3},
+		{"sara am with tonal #1", args{runedataThai.CharacterMaiTri, runedataThai.CharacterSaraAm}, 0.3},
+		{"sara am with tonal #2", args{runedataThai.CharacterSaraAm, runedataThai.CharacterMaiTri}, 0.3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ThaiTransPenalty(tt.args.c, tt.args.d); got != tt.want {
-				t.Errorf("ThaiTransPenalty() = %v, want %v", got, tt.want)
+			if got := TransPenalty(tt.args.c, tt.args.d); got != tt.want {
+				t.Errorf("TransPenalty() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestThaiOptimalAlignmentDistance(t *testing.T) {
+func TestThaiOptimalAlignmentDist(t *testing.T) {
 	type args struct {
 		fst string
 		snd string
@@ -88,7 +92,7 @@ func TestThaiOptimalAlignmentDistance(t *testing.T) {
 	}
 }
 
-func TestNormalizedThaiOptimalAlignmentDistance(t *testing.T) {
+func TestNormalizedThaiOptimalAlignmentDist(t *testing.T) {
 	type args struct {
 		fst string
 		snd string
@@ -109,7 +113,7 @@ func TestNormalizedThaiOptimalAlignmentDistance(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ThaiOptimalAlignmentNormDist(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
+			if got := NormalizedThaiOptimalAlignmentDist(tt.args.fst, tt.args.snd); math.Abs(got-tt.want) > 1e-6 {
 				t.Errorf("ThaiOptimalAlignmentNormDist() = %v, want %v", got, tt.want)
 			}
 		})

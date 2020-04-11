@@ -3,7 +3,7 @@ package factory
 import (
 	"github.com/abhabongse/fuzzymatch-go/candidate"
 	"github.com/abhabongse/fuzzymatch-go/dicecoeff"
-	"github.com/abhabongse/fuzzymatch-go/editdist"
+	"github.com/abhabongse/fuzzymatch-go/legacy_editdist"
 	"github.com/abhabongse/fuzzymatch-go/sanitary"
 	"math"
 )
@@ -22,7 +22,7 @@ func NewSimilarityScoreFunc(setters ...OptionSetter) func(string, string) float6
 	config := &Options{
 		sanitizeStringFunc:     sanitary.Noop,
 		generateCandidatesFunc: candidate.GenerateDefault,
-		editDistanceFunc:       editdist.SimpleAlignmentNormDist,
+		editDistanceFunc:       legacy_editdist.SimpleAlignmentNormDist,
 		combineScoresFunc:      EditDistSubScoreOnly,
 	}
 

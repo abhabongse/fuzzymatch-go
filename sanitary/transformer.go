@@ -50,7 +50,7 @@ then re-combined to get final output.
 */
 var RemoveAccentsTransformer = transform.Chain(
 	norm.NFKD,
-	runes.Remove(runes.In(runedata.AllCombiningDiacriticalMarks)),
+	runes.Remove(runes.In(runedata.CombiningDiacriticalMarks)),
 	norm.NFKC,
 )
 
