@@ -7,27 +7,25 @@ This repository contains a Go language implementation of approximate string matc
 ### Preset functions
 
 Inside the package [`github.com/abhabongse/fuzzymatch-go/factory/preset`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory/preset),
-there is the function `PlainSimilarityScore` which determines the similarity score between two
-generic input strings. Another function, `ThaiNameSimilarityScore` is a customized version for
-the similarity scoring function but it has extra pre-processings and string comparison logic for
-names of Thai people. 
+there are three examples of preset string similarity score functions with different customizations:
 
-Both functions have output values between 0 and 1, where 0 means that two
-strings are very distinct whereas 1 means that two strings are very similar. Here are the 
-signatures for both functions.
- 
+- [SimpleSimilarityScore](factory/preset/simple.go)
+- [PlanSimilarityScore](factory/preset/plain.go)
+- [ThaiNameSimilarityScore](factory/preset/thai_name.go)
+
+All of these functions have output values between 0 and 1 (inclusive),
+where 1 indicates that both input strings are identical under some criteria
+and 0 indicates that both strings are totally distinct.
+The signature of these functions is
 ```go
-func PlainSimilarityScore(fst, snd string) float64 { ... }
-
-func ThaiNameSimilarityScore(fst, snd string) float64 { ... }
+func(string, string) float64
 ```
 
 ### Customization
 
-The logical flow for string similarity scoring functions may be customized by using the factory
-(inside the package [`github.com/abhabongse/fuzzymatch-go/factory`](https://godoc.org/github.com/abhabongse/fuzzymatch-go/factory))
-to construct a new function. The factory accepts various options; see the documentation for more
-information.
+New string similarity score functions may be constructed via various higher-order functions provided in this module.
+Look at the construction of the preset functions above for some ideas
+of how to introduce addition functionalities to your string similarity score functions.
 
 ### Notes
 
