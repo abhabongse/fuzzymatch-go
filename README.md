@@ -1,6 +1,6 @@
 # Fuzzy Match
 
-[![GoDoc](https://godoc.org/github.com/abhabongse/fuzzymatch-go?status.svg)](https://godoc.org/github.com/abhabongse/fuzzymatch-go)
+[![pkg.go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/abhabongse/fuzzymatch-go)
 
 This repository contains a Go language implementation of approximate string matching algorithms.
 

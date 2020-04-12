@@ -1,3 +1,4 @@
-// Package nametitle is the subpackage containing functions
-// to generate names without titles based on regular expression patterns.
+// Package nametitle is the subpackage of package candidate
+// which generates names with titles stripped away
+// based on pre-defined regular expression patterns.
 package nametitle

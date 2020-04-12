@@ -1,8 +1,5 @@
-/*
-Package factory provides a higher-ordered function which constructs string
-similarity scoring functions based on various configurable settings
-(such as how strings are sanitized before similarity scores are computed,
-or which rune distance metrics are used to measure distances between a pair
-of strings).
-*/
+// Package factory provides the basic building block structure
+// which governs how different components of this fuzzymatch-go module
+// can be combined together to construct a function determining the string similarity
+// between any two given input strings.
 package factory

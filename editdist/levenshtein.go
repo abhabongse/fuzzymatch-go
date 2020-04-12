@@ -1,5 +1,3 @@
-// This source file contains the implementation of basic Levenshtein distance metric.
-
 package editdist
 
 import (

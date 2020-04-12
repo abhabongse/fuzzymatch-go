@@ -3,6 +3,7 @@
 // under various distance metrics in string space.
 // The higher the distance, the greater the difference between both strings.
 //
+// There are two main distance metrics implemented in this package.
 //
 // Levenshtein Distance
 //

@@ -13,7 +13,6 @@ import (
 // (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
 //
 // TODO: implement this function in terms of a string transformer
-// 		 which is kinda hard
 func RecombineThaiGrams(str string) string {
 	for _, pattern := range thaiRecombinationTable {
 		str = strings.Replace(str, pattern.oldString, pattern.newString, -1)
@@ -44,6 +43,8 @@ var thaiRecombinationTable = []struct{ oldString, newString string }{
 // For example, ThaiCharacterMaiEk is never to be repeated more than once.
 // So when the input string contains two or more consecutive ThaiCharacterMaiEk,
 // then all of them are moved except the first one.
+//
+// TODO: implement this function in terms of a string transformer
 func RemoveThaiRepeatedAccidents(str string) string {
 	inputRunes := []rune(str)
 	outputRunes := make([]rune, 0, len(inputRunes))
