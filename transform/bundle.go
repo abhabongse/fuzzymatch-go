@@ -34,7 +34,7 @@ func chainedTransformer() transform.Transformer {
 		// Convert western characters into their lowercase forms
 		CaseFoldingTransformer,
 		// Remove diacritical marks above latin characters
-		// TODO: move this to candidate generation instead
+		diacritics.AsciiFoldTransformer,
 		diacritics.StripDiacriticalMarksTransformer,
 		// Respacing the entire string by stripping out leading and trailing spaces,
 		// and then replacing inter-word spaces with a single normal space

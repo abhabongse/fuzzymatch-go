@@ -20,7 +20,7 @@ func TestPlainSimilarityScore(t *testing.T) {
 		{"something & empty", args{"saturday", "  "}, 0},
 		{"days of week", args{"saturday", "sunday"}, 5.0 / 8.0},
 		{"identical after norm #1", args{"\nmemorization schön", "memor\x01ization schon"}, 1},
-		{"identical after norm #2", args{"\nmemorization schön", "memor\x01ization schoen"}, 1},
+		{"identical after norm #2", args{"\nmemorization schœn", "memor\x01ization schoen"}, 1},
 		{"identical after norm #3", args{"HEIßEN \n now", "heissen now"}, 1},
 	}
 	for _, tt := range tests {
