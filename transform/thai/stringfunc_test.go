@@ -2,7 +2,6 @@ package thai
 
 import "testing"
 
-
 func TestRecombineThaiGrams(t *testing.T) {
 	type args struct {
 		str string
@@ -26,7 +25,6 @@ func TestRecombineThaiGrams(t *testing.T) {
 		})
 	}
 }
-
 
 func TestRemoveThaiRepeatedAccidents(t *testing.T) {
 	type args struct {

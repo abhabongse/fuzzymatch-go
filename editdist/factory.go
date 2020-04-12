@@ -4,6 +4,7 @@
 package editdist
 
 import (
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"math"
 )
 
@@ -41,7 +42,7 @@ func MakeOptimalAlignmentDistFunction(substPenaltyFunction, transPenaltyFunction
 // The reason for this is that some insertion/deletion errors incur sub-unit penalties.
 // Without the size-fitting denominator, a malicious user may attack
 // by saturating those insertions/deletions in order to decrease the total edit distances.
-func MakeStringSimilarityFunction(inputFunction StringDistFunction) StringDistFunction {
+func MakeStringSimilarityFunction(inputFunction StringDistFunction) factory.SimilarityScoreFunction {
 	return func(fst, snd string) float64 {
 		dist := inputFunction(fst, snd)
 		fstCapacity := inputFunction(fst, "")

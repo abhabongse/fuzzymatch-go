@@ -1,5 +1,3 @@
-// This source file contains the implementation of optimal alignment distance metric.
-
 package editdist
 
 import "math"
