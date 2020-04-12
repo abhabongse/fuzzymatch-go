@@ -32,12 +32,12 @@ func (t *removeRepeatedMarksSpanningTransformer) Transform(dst, src []byte, atEO
 			nSrc += size
 			continue
 		}
-		t.prevRune = r
 		// Write character to destination if capacity allows
 		if nDst+size > len(dst) {
 			err = transform.ErrShortDst
 			break
 		}
+		t.prevRune = r
 		for i := 0; i < size; i++ {
 			dst[nDst] = src[nSrc]
 			nDst++

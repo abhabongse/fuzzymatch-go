@@ -56,6 +56,11 @@ func TestRespaceTransformer(t *testing.T) {
 		{"inter-word", args{"well\t\ndone"}, "well done"},
 		{"no change", args{"this is perfectly fine"}, "this is perfectly fine"},
 		{"all three", args{" \t100\r200\n "}, "100 200"},
+		{
+			"long input",
+			args{"\t\t\r\n\n  \n\t\r lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys lone\twords \n\n\n\r well done guys \t\t\r\n\n  \n\t\r "},
+			"lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys lone words well done guys",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
