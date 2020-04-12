@@ -1,8 +1,17 @@
 package thai
 
-import "testing"
+import (
+	"golang.org/x/text/transform"
+	"testing"
+)
 
-func TestRemoveThaiRepeatedAccidents(t *testing.T) {
+func removedRepeatedMarks(input string) string {
+	output, _, _ := transform.String(RemoveRepeatedMarksTransformer, input)
+	return output
+}
+
+
+func TestRemoveRepeatedMarksTransformer(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -20,8 +29,8 @@ func TestRemoveThaiRepeatedAccidents(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := RemoveThaiRepeatedAccidents(tt.args.str); got != tt.want {
-				t.Errorf("RemoveThaiRepeatedAccidents() = %v, want %v", got, tt.want)
+			if got := removedRepeatedMarks(tt.args.str); got != tt.want {
+				t.Errorf("removedRepeatedMarks() = %v, want %v", got, tt.want)
 			}
 		})
 	}

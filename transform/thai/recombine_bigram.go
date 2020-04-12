@@ -9,13 +9,13 @@ import (
 // BigramRecombineTransformer is a Unicode stream transformer object
 // which removes all leading and trailing white-spaces,
 // then it reduces all inter-word white-spaces into a single normal space.
-var BigramRecombineTransformer transform.Transformer = bigramRecombineTransformer{}
+var BigramRecombineTransformer transform.Transformer = &bigramRecombineTransformer{}
 
 type bigramRecombineTransformer struct {
 	transform.NopResetter
 }
 
-func (t bigramRecombineTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+func (t *bigramRecombineTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
 outer:
 	for nSrc < len(src) {
 		bigram := [2]rune{0, 0}

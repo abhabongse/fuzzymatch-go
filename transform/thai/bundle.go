@@ -11,16 +11,9 @@ import (
 
 // Sanitize extends on the LatinExtendedSanitize
 // by additionally sanitize an input string containing Thai scripts.
-//
 // TODO: revamp this function
 func Sanitize(input string) string {
-
 	output, _, _ := xTextTransform.String(precisThaiSanitizeTransformer, input)
-
-	// Special rule: remove accidentally repeated non-spacing marks such as
-	// tonal marks, ascending vowels, descending vowels, etc.
-	output = RemoveThaiRepeatedAccidents(output)
-
 	return output
 }
 
@@ -47,6 +40,9 @@ func chainedTransformer() xTextTransform.Transformer {
 		diacritics.StripDiacriticalMarksTransformer,
 		// Special rule: combine characters for sara-ae and sara-am
 		BigramRecombineTransformer,
+		// Special rule: remove accidentally repeated non-spacing marks such as
+		// tonal marks, ascending vowels, descending vowels, etc.
+		RemoveRepeatedMarksTransformer,
 		// Respacing the entire string by stripping out leading and trailing spaces,
 		// and then replacing inter-word spaces with a single normal space
 		transform.RespaceTransformer,

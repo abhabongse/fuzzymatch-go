@@ -10,14 +10,14 @@ import (
 // which replaces a character with the ASCII folding version of the character.
 var AsciiFoldTransformer = transform.Chain(
 	norm.NFKC,
-	asciiFoldSpanningTransformer{},
+	&asciiFoldSpanningTransformer{},
 )
 
 type asciiFoldSpanningTransformer struct {
 	transform.NopResetter
 }
 
-func (t asciiFoldSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+func (t *asciiFoldSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
 	for r, size := rune(0), 0; nSrc < len(src); {
 		// Attempt to decode the current rune
 		if r = rune(src[nSrc]); r < utf8.RuneSelf {
@@ -58,7 +58,7 @@ func (t asciiFoldSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nD
 	return
 }
 
-func (t asciiFoldSpanningTransformer) Span(src []byte, atEOF bool) (n int, err error) {
+func (t *asciiFoldSpanningTransformer) Span(src []byte, atEOF bool) (n int, err error) {
 	for r, size := rune(0), 0; n < len(src); {
 		// Attempt to decode the current rune
 		if r = rune(src[n]); r < utf8.RuneSelf {

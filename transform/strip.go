@@ -16,13 +16,13 @@ var StripNonPrintTransformer = runes.Remove(runes.NotIn(runedata.PrintsAndWhiteS
 // RespaceTransformer is a Unicode stream transformer object
 // which removes all leading and trailing white-spaces,
 // then it reduces all inter-word white-spaces into a single normal space.
-var RespaceTransformer transform.SpanningTransformer = respaceSpanningTransformer{}
+var RespaceTransformer transform.SpanningTransformer = &respaceSpanningTransformer{}
 
 type respaceSpanningTransformer struct {
 	afterFirstNonSpace bool
 }
 
-func (t respaceSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
+func (t *respaceSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
 	for r, size := rune(0), 0; nSrc < len(src); {
 		// Attempt to decode the current rune
 		if r = rune(src[nSrc]); r < utf8.RuneSelf {
@@ -94,11 +94,11 @@ func (t respaceSpanningTransformer) Transform(dst, src []byte, atEOF bool) (nDst
 	return
 }
 
-func (t respaceSpanningTransformer) Reset() {
+func (t *respaceSpanningTransformer) Reset() {
 	t.afterFirstNonSpace = false
 }
 
-func (t respaceSpanningTransformer) Span(src []byte, atEOF bool) (n int, err error) {
+func (t *respaceSpanningTransformer) Span(src []byte, atEOF bool) (n int, err error) {
 	for r, size := rune(0), 0; n < len(src); {
 		// Attempt to decode the current rune
 		if r = rune(src[n]); r < utf8.RuneSelf {
