@@ -2,39 +2,8 @@ package thai
 
 import (
 	"github.com/abhabongse/fuzzymatch-go/runedata/thai"
-	"strings"
 	"unicode"
 )
-
-// RecombineThaiGrams searches for Thai characters
-// written as a non-canonical bigrams
-// and turn them into its appropriate canonical form.
-// There are 2 patterns:
-// (1) nikhahit + sara-aa = sara-am; and (2) sara-e + sara-e = sara-ae.
-//
-// TODO: implement this function in terms of a string transformer
-func RecombineThaiGrams(str string) string {
-	for _, pattern := range thaiRecombinationTable {
-		str = strings.Replace(str, pattern.oldString, pattern.newString, -1)
-	}
-	return str
-}
-
-// thaiRecombinationTable is a list of recombination patterns:
-// each pattern describes an old substring portion
-// which should be replaced with a new substring.
-var thaiRecombinationTable = []struct{ oldString, newString string }{
-	{
-		// Replacing nikhahit + sara-aa = sara-am
-		string([]rune{thai.CharacterNikhahit, thai.CharacterSaraAa}),
-		string([]rune{thai.CharacterSaraAm}),
-	},
-	{
-		// Replacing sara-e + sara-e = sara-ae
-		string([]rune{thai.CharacterSaraE, thai.CharacterSaraE}),
-		string([]rune{thai.CharacterSaraAe}),
-	},
-}
 
 // RemoveThaiRepeatedAccidents attempts to remove multiple
 // Thai ascending and descending characters
