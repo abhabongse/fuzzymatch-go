@@ -10,6 +10,11 @@ func stripNonPrint(input string) string {
 	return output
 }
 
+func respace(input string) string {
+	output, _, _ := transform.String(RespaceTransformer, input)
+	return output
+}
+
 func TestStripNonPrintTransformer(t *testing.T) {
 	type args struct {
 		str string
@@ -35,7 +40,7 @@ func TestStripNonPrintTransformer(t *testing.T) {
 	}
 }
 
-func TestReSpace(t *testing.T) {
+func TestRespaceTransformer(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -54,8 +59,8 @@ func TestReSpace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ReSpace(tt.args.str); got != tt.want {
-				t.Errorf("ReSpace() = %v, want %v", got, tt.want)
+			if got := respace(tt.args.str); got != tt.want {
+				t.Errorf("respace() = %v, want %v", got, tt.want)
 			}
 		})
 	}

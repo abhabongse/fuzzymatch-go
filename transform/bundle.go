@@ -24,10 +24,10 @@ func LatinExtendedSanitize(str string) string {
 		CaseFoldingTransformer,
 		//// Remove diacritical marks above latin characters
 		//StripAccentTransformer,
+		// Respacing the entire string by stripping out leading and trailing spaces,
+		// and then replacing inter-word spaces with a single normal space
+		RespaceTransformer,
 	)
-	// Re-spacing the entire string by stripping out leading+trailing spaces,
-	// and then transforming multiple consecutive spaces with a single space.
-	str = ReSpace(str)
 	return str
 }
 
