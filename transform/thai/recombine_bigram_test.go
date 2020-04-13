@@ -1,16 +1,12 @@
 package thai
 
 import (
-	"golang.org/x/text/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"testing"
 )
 
-func bigramRecombine(input string) string {
-	output, _, _ := transform.String(BigramRecombineTransformer, input)
-	return output
-}
-
 func TestBigramRecombineTransformer(t *testing.T) {
+	bigramRecombine := factory.MakeStringTransformFunction(BigramRecombineTransformer)
 	type args struct {
 		str string
 	}

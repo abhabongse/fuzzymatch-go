@@ -1,17 +1,12 @@
 package thai
 
 import (
-	"golang.org/x/text/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"testing"
 )
 
-func removedRepeatedMarks(input string) string {
-	output, _, _ := transform.String(RemoveRepeatedMarksTransformer, input)
-	return output
-}
-
-
 func TestRemoveRepeatedMarksTransformer(t *testing.T) {
+	removedRepeatedMarks := factory.MakeStringTransformFunction(RemoveRepeatedMarksTransformer)
 	type args struct {
 		str string
 	}

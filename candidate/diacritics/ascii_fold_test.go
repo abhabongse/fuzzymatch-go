@@ -1,16 +1,12 @@
 package diacritics
 
 import (
-	"golang.org/x/text/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"testing"
 )
 
-func asciiFold(input string) string {
-	output, _, _ := transform.String(AsciiFoldTransformer, input)
-	return output
-}
-
 func TestAsciiFoldTransformer(t *testing.T) {
+	asciiFold := factory.MakeStringTransformFunction(AsciiFoldTransformer)
 	type args struct {
 		str string
 	}

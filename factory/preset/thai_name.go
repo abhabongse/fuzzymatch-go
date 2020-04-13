@@ -1,11 +1,10 @@
 package preset
 
 import (
-	"github.com/abhabongse/fuzzymatch-go/candidate"
 	"github.com/abhabongse/fuzzymatch-go/candidate/nametitle"
 	"github.com/abhabongse/fuzzymatch-go/editdist"
 	editdistThai "github.com/abhabongse/fuzzymatch-go/editdist/thai"
-	"github.com/abhabongse/fuzzymatch-go/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	sanitaryThai "github.com/abhabongse/fuzzymatch-go/transform/thai"
 )
 
@@ -17,9 +16,9 @@ import (
 //     (i.e. attempting to remove English and Thai titles such as Mrs. or dek-chai)
 // 3.  For optimal alignment distance metric over string space,
 //     the specialized substitution/transposition penalty functions are used instead.
-var ThaiNameSimilarityScore = transform.PrependStringSanitizer(
+var ThaiNameSimilarityScore = factory.PrependStringSanitizerForSimilarityScore(
 	sanitaryThai.Sanitize,
-	candidate.MaxFromCandidatesProduct(
+	factory.MaxFromCandidatesProduct(
 		nametitle.GenerateNamesWithoutTitles,
 		editdist.MakeStringSimilarityFunction(
 			editdist.MakeOptimalAlignmentDistFunction(editdistThai.SubstPenalty, editdistThai.TransPenalty),

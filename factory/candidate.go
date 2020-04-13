@@ -1,17 +1,14 @@
-package candidate
+package factory
 
-import (
-	"github.com/abhabongse/fuzzymatch-go/factory"
-	"math"
-)
+import "math"
 
 // Chain is a higher-order function
 // which multiplies together candidate generator functions
 // so that the resulting candidate generator function will
 // produce all combinations of candidates from the provided generators.
 func Chain(
-	generators ...factory.CandidatesGeneratorFunction,
-) factory.CandidatesGeneratorFunction {
+	generators ...CandidatesGeneratorFunction,
+) CandidatesGeneratorFunction {
 	return func(input string) []string {
 		return recursiveExpandCandidates([]string{input}, generators)
 	}
@@ -19,7 +16,7 @@ func Chain(
 
 func recursiveExpandCandidates(
 	previousCandidates []string,
-	generators []factory.CandidatesGeneratorFunction,
+	generators []CandidatesGeneratorFunction,
 ) []string {
 	if len(generators) == 0 {
 		return previousCandidates
@@ -33,14 +30,14 @@ func recursiveExpandCandidates(
 	return recursiveExpandCandidates(candidates, restGenerators)
 }
 
-// PrependStringSanitizer is a higher-order function
+// PrependStringSanitizerForSimilarityScore is a higher-order function
 // which modifies the provided generateCandidates function
 // so that the input string to the function will be sanitized first
 // via a call to sanitize function.
-func PrependStringSanitizer(
-	sanitize factory.StringTransformerFunction,
-	generateCandidates factory.CandidatesGeneratorFunction,
-) factory.CandidatesGeneratorFunction {
+func PrependStringSanitizerForCandidatesGenerator(
+	sanitize StringTransformerFunction,
+	generateCandidates CandidatesGeneratorFunction,
+) CandidatesGeneratorFunction {
 	return func(input string) []string {
 		return generateCandidates(sanitize(input))
 	}
@@ -55,9 +52,9 @@ func PrependStringSanitizer(
 // The returned score will the maximum scores among scores
 // between all possible pairs of candidates.
 func MaxFromCandidatesProduct(
-	generateCandidates factory.CandidatesGeneratorFunction,
-	similarityScore factory.SimilarityScoreFunction,
-) factory.SimilarityScoreFunction {
+	generateCandidates CandidatesGeneratorFunction,
+	similarityScore SimilarityScoreFunction,
+) SimilarityScoreFunction {
 	return func(fst, snd string) float64 {
 		fstCandidateSet := generateCandidates(fst)
 		sndCandidateSet := generateCandidates(snd)

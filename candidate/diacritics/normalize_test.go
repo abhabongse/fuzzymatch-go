@@ -1,16 +1,12 @@
 package diacritics
 
 import (
-	"golang.org/x/text/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"testing"
 )
 
-func stripDiacriticalMarks(input string) string {
-	output, _, _ := transform.String(StripDiacriticalMarksTransformer, input)
-	return output
-}
-
 func TestStripDiacriticalMarkTransformer(t *testing.T) {
+	stripDiacriticalMarks := factory.MakeStringTransformFunction(StripDiacriticalMarksTransformer)
 	type args struct {
 		str string
 	}

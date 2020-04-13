@@ -1,21 +1,12 @@
 package transform
 
 import (
-	"golang.org/x/text/transform"
+	"github.com/abhabongse/fuzzymatch-go/factory"
 	"testing"
 )
 
-func stripNonPrint(input string) string {
-	output, _, _ := transform.String(StripNonPrintTransformer, input)
-	return output
-}
-
-func respace(input string) string {
-	output, _, _ := transform.String(RespaceTransformer, input)
-	return output
-}
-
 func TestStripNonPrintTransformer(t *testing.T) {
+	stripNonPrint := factory.MakeStringTransformFunction(StripNonPrintTransformer)
 	type args struct {
 		str string
 	}
@@ -41,6 +32,7 @@ func TestStripNonPrintTransformer(t *testing.T) {
 }
 
 func TestRespaceTransformer(t *testing.T) {
+	respace := factory.MakeStringTransformFunction(RespaceTransformer)
 	type args struct {
 		str string
 	}
